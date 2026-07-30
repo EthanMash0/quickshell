@@ -4,6 +4,8 @@ import Quickshell
 import Quickshell.Widgets
 
 RowLayout {
+	SystemTrayWidget {}
+
 	WrapperMouseArea {
 		rightMargin: 16
 		cursorShape: Qt.PointingHandCursor
