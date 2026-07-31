@@ -70,21 +70,25 @@ PopupWindow {
 			Repeater {
 				model: windows
 
-				ScreencopyView {
-					required property var modelData
-					captureSource: modelData
-					live: true
-					constraintSize: Qt.size(500, 300)
+				// adds radius to child
+				ClippingWrapperRectangle {
+					required property var modelData // passed from repeater to child
+					radius: 4
+					border.color: "#ebdbb2"
+					border.width: 1
 
-					MouseArea {
-						anchors.fill: parent
-						onClicked: modelData.activate()
+					ScreencopyView {
+						captureSource: modelData
+						live: true
+						constraintSize: Qt.size(500, 300)
+
+						MouseArea {
+							anchors.fill: parent
+							onClicked: modelData.activate()
+						}
 					}
 				}
 			}
 		}
-
 	}
 }
-
-
