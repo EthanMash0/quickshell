@@ -1,47 +1,110 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Controls
 import Quickshell
 import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 
 RowLayout {
 	id: root
+	property bool isOpen: true
 
-	Repeater {
-		model: SystemTray.items
+	// to find icons for apps that use non-quickshell-supported paths
+	function resolveTrayIcon(src, px = 16) {
+		if (!src || src.indexOf("?path=") === -1) return src
 
-		WrapperMouseArea {
-			id: trayBtn
-			rightMargin: 4
-			leftMargin: 4
-			cursorShape: Qt.PointingHandCursor
+		const s = src.replace(/^image:\/\/icon\//, "")
+		const i = s.indexOf("?path=")
+		const name = s.slice(0, i)
+		const themeRoot = s.slice(i + 6)
 
-			// --------------
-			// tray button
-			// --------------
-			required property var modelData
-			acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
+		return `file://${themeRoot}/hicolor/${px}x${px}/status/${name}.png`
+	}
 
-			onClicked: (mouse) => {
-				if (mouse.button === Qt.LeftButton) {
-					modelData.activate()
-				} else if (mouse.button === Qt.MiddleButton) {
-					modelData.secondaryActivate()
-					} else if (mouse.button === Qt.RightButton) {
-						modelData.display()
+	WrapperMouseArea {
+		onClicked: root.isOpen = !root.isOpen
+
+		Text {
+			color: "#ebdbb2"
+			font.pixelSize: 16
+			text: root.isOpen 
+				? ">" 
+				: "<"
+		}
+	}
+
+	RowLayout {
+		visible: root.isOpen
+
+		Repeater {
+			model: SystemTray.items
+
+			WrapperMouseArea {
+				id: trayBtn
+				leftMargin: 8
+				cursorShape: Qt.PointingHandCursor
+
+				required property var modelData
+
+				//---------------
+				// click actions
+				//---------------
+				QsMenuAnchor {
+					id: menuAnchor
+					menu: modelData.menu
+					anchor.item: trayBtn
+					anchor.edges: Edges.Bottom
+					anchor.gravity: Edges.Bottom
 				}
-			}
 
-			// draw app icon image and running indicator
-			Item {
-				implicitWidth: icon.implicitWidth
-				implicitHeight: 36
+				acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
 
-				IconImage {
+				onClicked: (mouse) => {
+					if (mouse.button === Qt.LeftButton) {
+						if (modelData.onlyMenu && modelData.hasMenu) {
+							menuAnchor.open()
+						} else {
+							modelData.activate()
+						}
+					} else if (mouse.button === Qt.MiddleButton) {
+						modelData.secondaryActivate()
+					} else if (mouse.button === Qt.RightButton) {
+						if (modelData.hasMenu) {
+							menuAnchor.open()
+						}
+					}
+				}
+
+				//---------
+				// tooltip
+				//---------
+				hoverEnabled: true
+
+				ToolTip.visible: containsMouse && !!(modelData.tooltipTitle || modelData.tooltipDescription || modelData.title)
+				ToolTip.text: {
+					const t = modelData.tooltipTitle || modelData.title
+					const d = modelData.tooltipDescription
+					return d ? `${t}\n${d}` : t
+				}
+				ToolTip.delay: 1000
+
+				//----------------
+				// scroll actions
+				//----------------
+				onWheel: (wheel) => {
+					modelData.scroll(wheel.angleDelta.y, false)
+				}
+
+				//-------
+				// image
+				//-------
+				Image {
 					id: icon
-					source: modelData.icon
-					implicitSize: 16
-					anchors.verticalCenter: parent.verticalCenter
+					width: 16
+					height: 16
+					sourceSize: Qt.size(16, 16)
+					fillMode: Image.PreserveAspectFit
+					source: resolveTrayIcon(modelData.icon, 16)
 				}
 			}
 		}

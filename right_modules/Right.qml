@@ -4,7 +4,12 @@ import Quickshell
 import Quickshell.Widgets
 
 RowLayout {
-	SystemTrayWidget {}
+
+	WrapperItem {
+		rightMargin: 16
+
+		SystemTrayWidget {}
+	}
 
 	WrapperMouseArea {
 		rightMargin: 16
