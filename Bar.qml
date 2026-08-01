@@ -20,7 +20,7 @@ Scope {
 
 			implicitHeight: 40
 
-			color: "#e6181818"
+			color: "#bb181818"
 
 			Right {
 				anchors.right: parent.right

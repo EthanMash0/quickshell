@@ -62,7 +62,7 @@ PopupWindow {
 	WrapperRectangle {
 		margin: 8
 		radius: 8
-		color: "#ee181818"
+		color: "#bb181818"
 
 		RowLayout {
 			id: previews
