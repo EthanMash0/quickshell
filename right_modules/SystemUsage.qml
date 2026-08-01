@@ -166,6 +166,7 @@ Singleton {
 			"-"
 		]
 		stdout: SplitParser {
+			splitMarker: "\n},"
 			onRead: chunk => {
 				let t = chunk.trim()
 				if (t.startsWith("[")) {
@@ -177,13 +178,12 @@ Singleton {
 				if (!t.startsWith("{")) {
 					t = "{" + t
 				}
-				if (!t.endsWith("}")) {
-					t = t + "}"
-				}
+				t = t + "}"
+
 				try {
 					const sample = JSON.parse(t)
 					const engines = sample.engines || {}
-					let busy = engines["Render/3D/0"]?.busy
+					let busy = engines["Render/3D"]?.busy
 					if (busy == null) {
 						busy = 0
 						for (const k in engines) {
@@ -193,31 +193,8 @@ Singleton {
 					root.gpuPercent = Math.min(100, Math.max(0, Math.round(busy)))
 				} catch (e) {
 					// incomplete chunk, ignore and leave previous value
-				}
-			}
-		}
-		stdout: StdioCollector {
-			onStreamFinished: {
-				let t = text.trim()
-				if (!t) return
-				if (!t.startsWith("[")) {
-					t = "[" + t.replace(/}\s*{/g, "},{") + "]"
-				}
-				try {
-					const samples = JSON.parse(t)
-					const sample = samples[samples.length - 1]
-					const engines = sample?.engines || {}
-					const render = engines["Render/3D/0"]?.busy
-					let busy = render
-					if (busy == null) {
-						busy = 0
-						for (const k in engines) {
-							busy = Math.max(busy, Number(engines[k]?.busy) || 0)
-						}
-					}
-					root.gpuPercent = Math.min(100, Math.max(0, Math.round(busy)))
-				} catch (e) {
-					// leave previous value
+					// uncomment to check for errors
+					// console.log("intel gpu parse failed:", e, t.slice(0, 80))
 				}
 			}
 		}
