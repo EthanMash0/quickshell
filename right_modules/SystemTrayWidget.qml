@@ -9,16 +9,26 @@ RowLayout {
 	id: root
 	property bool isOpen: true
 
-	// to find icons for apps that use non-quickshell-supported paths
-	function resolveTrayIcon(src, px = 16) {
-		if (!src || src.indexOf("?path=") === -1) return src
+	function trayIconCandidates(src, px = 16) {
+		if (!src) return [""]
+		if (src.indexOf("?path=") === -1) return [src]
 
 		const s = src.replace(/^image:\/\/icon\//, "")
 		const i = s.indexOf("?path=")
 		const name = s.slice(0, i)
 		const themeRoot = s.slice(i + 6)
 
-		return `file://${themeRoot}/hicolor/${px}x${px}/status/${name}.png`
+		return [
+			// flat IconThemePath (Spotify, many Electron apps)
+			`file://${themeRoot}/${name}.png`,
+			`file://${themeRoot}/${name}.svg`,
+			// Freedesktop theme tree (Dropbox, etc.)
+			`file://${themeRoot}/hicolor/${px}x${px}/status/${name}.png`,
+			`file://${themeRoot}/hicolor/${px}x${px}/apps/${name}.png`,
+			`file://${themeRoot}/hicolor/scalable/status/${name}.svg`,
+			// Quickshell default provider
+			src
+		]
 	}
 
 	WrapperMouseArea {
@@ -98,13 +108,42 @@ RowLayout {
 				//-------
 				// image
 				//-------
-				Image {
+				IconImage {
 					id: icon
+					implicitSize: 16
 					width: 16
 					height: 16
-					sourceSize: Qt.size(16, 16)
-					fillMode: Image.PreserveAspectFit
-					source: resolveTrayIcon(modelData.icon, 16)
+
+					property int candidateIndex: 0
+					property var candidates: []
+
+					function resetCandidates() {
+						candidates = root.trayIconCandidates(modelData.icon, 16)
+						candidateIndex = 0
+						source = candidates[0] || ""
+					}
+
+					function advanceCandidate() {
+						if (candidateIndex >= candidates.length - 1) return
+						candidateIndex++
+						source = candidates[candidateIndex]
+					}
+
+					Component.onCompleted: resetCandidates()
+
+					onStatusChanged: {
+						if (status === Image.Error) {
+							Qt.callLater(advanceCandidate)
+						}
+					}
+
+					// reset when the tray item's icon changes (e.g. for state changes)
+					Connections {
+						target: modelData
+						function onIconChanged() {
+							icon.resetCandidates()
+						}
+					}
 				}
 			}
 		}
