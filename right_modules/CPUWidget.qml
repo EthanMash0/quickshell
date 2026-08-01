@@ -15,14 +15,14 @@ RowLayout {
 			color: "#ebdbb2"
 			font.pixelSize: 12
 			font.bold: true
-			text: "100%"
+			text: `${SystemUsage.cpuPercent}%`
 			bottomPadding: -6
 		}
 
 		Text {
 			color: "#ebdbb2"
 			font.pixelSize: 10
-			text: "CPU"
+			text: "CPU  "
 		}
 	}
 }
