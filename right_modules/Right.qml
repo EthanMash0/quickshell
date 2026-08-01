@@ -11,6 +11,24 @@ RowLayout {
 		SystemTrayWidget {}
 	}
 
+	WrapperItem {
+		rightMargin: 16
+
+		GPUWidget {}
+	}
+	
+	WrapperItem {
+		rightMargin: 16
+
+		CPUWidget {}
+	}
+
+	WrapperItem {
+		rightMargin: 16
+
+		RAMWidget {}
+	}
+
 	WrapperMouseArea {
 		rightMargin: 16
 		cursorShape: Qt.PointingHandCursor
