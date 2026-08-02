@@ -27,7 +27,6 @@ RowLayout {
 			radius: 8
 			implicitWidth: stats.implicitWidth + 16
 			implicitHeight: stats.implicitHeight + 6
-			anchors.verticalCenter: parent.verticalCenter
 
 			RowLayout {
 				id: stats
@@ -41,17 +40,29 @@ RowLayout {
 		}
 	}
 
+	ControlCenterPopup {
+		id: controlCenterPopup
+	}
+
 	WrapperMouseArea {
 		id: controlCenter
 		property string backgroundColor: "transparent"
 
 		hoverEnabled: true
-		onEntered: controlCenter.backgroundColor = "#22ebdbb2"
-		onExited: controlCenter.backgroundColor = "transparent"
+		onEntered: {
+			controlCenter.backgroundColor = "#22ebdbb2"
+			controlCenterPopup.cancelHide()
+		}
+		onExited: {
+			controlCenter.backgroundColor = "transparent"
+			controlCenterPopup.scheduleHide()
+		}
 		onClicked: {
-			Quickshell.execDetached(["alacritty", "-e", "pipemixer"])
-			Quickshell.execDetached(["alacritty", "-e", "bluetui"])
-			Quickshell.execDetached(["alacritty", "-e", "gazelle"])
+			if (controlCenterPopup.visible) {
+				controlCenterPopup.hide()
+			} else {
+				controlCenterPopup.show(controlCenter)	
+			}
 		}
 
 		Rectangle {
@@ -59,7 +70,6 @@ RowLayout {
 			radius: 8
 			implicitWidth: controls.implicitWidth + 16
 			implicitHeight: controls.implicitHeight + 12
-			anchors.verticalCenter: parent.verticalCenter
 
 			RowLayout {
 				id: controls
@@ -88,7 +98,6 @@ RowLayout {
 			radius: 8
 			implicitWidth: clock.implicitWidth + 16
 			implicitHeight: clock.implicitHeight + 14
-			anchors.verticalCenter: parent.verticalCenter
 
 			RowLayout {
 				id: clock

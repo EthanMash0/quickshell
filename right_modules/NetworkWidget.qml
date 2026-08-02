@@ -40,6 +40,7 @@ RowLayout {
 	Text {
 		color: "#ebdbb2"
 		font.pixelSize: 16
+		anchors.centerIn: parent
 		text: {
 			// prefer ethernet when it is in use
 			if (root.wiredDevice) {

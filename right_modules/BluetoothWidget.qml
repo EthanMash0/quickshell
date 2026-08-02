@@ -8,6 +8,7 @@ RowLayout {
 	Text {
 		color: "#ebdbb2"
 		font.pixelSize: 16
+		anchors.centerIn: parent
 		text: {
 			const a = adapter
 			if (!a) return "󰂲"
