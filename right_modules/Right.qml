@@ -7,23 +7,32 @@ RowLayout {
 	id: root
 	spacing: 0
 
+	//--------------------
+	// system tray widget
+	//--------------------
 	WrapperItem {
 		rightMargin: 8
 
 		SystemTrayWidget {}
 	}
 	
+	//---------------------
+	// system usage widget
+	//---------------------
 	WrapperMouseArea {
 		id: systemUsage
-		property string backgroundColor: "transparent"
-
-		hoverEnabled: true
-		onEntered: systemUsage.backgroundColor = "#22ebdbb2"
-		onExited: systemUsage.backgroundColor = "transparent"
+		cursorShape: Qt.PointingHandCursor
 		onClicked: Quickshell.execDetached(["alacritty", "-e", "btop"])
 
+		HoverHandler {
+			id: systemUsageHover
+		}
+
+		// hover background
 		Rectangle {
-			color: systemUsage.backgroundColor
+			color: systemUsageHover.hovered
+					? "#22ebdbb2"
+					: "transparent"
 			radius: 8
 			implicitWidth: stats.implicitWidth + 16
 			implicitHeight: stats.implicitHeight + 6
@@ -32,7 +41,6 @@ RowLayout {
 				id: stats
 				spacing: 16
 				anchors.centerIn: parent
-
 				GPUWidget {}
 				CPUWidget {}
 				RAMWidget {}
@@ -40,23 +48,16 @@ RowLayout {
 		}
 	}
 
+	//-----------------------
+	// control center widget
+	//-----------------------
 	ControlCenterPopup {
 		id: controlCenterPopup
 	}
 
 	WrapperMouseArea {
 		id: controlCenter
-		property string backgroundColor: "transparent"
-
-		hoverEnabled: true
-		onEntered: {
-			controlCenter.backgroundColor = "#22ebdbb2"
-			controlCenterPopup.cancelHide()
-		}
-		onExited: {
-			controlCenter.backgroundColor = "transparent"
-			controlCenterPopup.scheduleHide()
-		}
+		cursorShape: Qt.PointingHandCursor
 		onClicked: {
 			if (controlCenterPopup.visible) {
 				controlCenterPopup.hide()
@@ -65,8 +66,22 @@ RowLayout {
 			}
 		}
 
+		HoverHandler {
+			id: controlCenterHover
+			onHoveredChanged: {
+				if (hovered) {
+					controlCenterPopup.cancelHide()
+				} else {
+					controlCenterPopup.scheduleHide()
+				}
+			}
+		}
+
+		// hover background
 		Rectangle {
-			color: controlCenter.backgroundColor
+			color: controlCenterHover.hovered
+					? "#22ebdbb2"
+					: "transparent"
 			radius: 8
 			implicitWidth: controls.implicitWidth + 16
 			implicitHeight: controls.implicitHeight + 12
@@ -83,22 +98,29 @@ RowLayout {
 		}
 	}
 
+	//--------------
+	// clock widget
+	//--------------
 	WrapperMouseArea {
 		id: dateTime
 		rightMargin: 8
-		property string backgroundColor: "transparent"
-
-		hoverEnabled: true
-		onEntered: dateTime.backgroundColor = "#22ebdbb2"
-		onExited: dateTime.backgroundColor = "transparent"
+		cursorShape: Qt.PointingHandCursor
 		onClicked: Quickshell.execDetached(["gnome-calendar"])
 
+		HoverHandler {
+			id: dateTimeHover
+		}
+
+		// hover background
 		Rectangle {
-			color: dateTime.backgroundColor
+			color: dateTimeHover.hovered
+					? "#22ebdbb2"
+					: "transparent"
 			radius: 8
 			implicitWidth: clock.implicitWidth + 16
 			implicitHeight: clock.implicitHeight + 14
 
+			// for future expansion (if desired)
 			RowLayout {
 				id: clock
 				spacing: 16

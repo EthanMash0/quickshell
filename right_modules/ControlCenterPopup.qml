@@ -42,34 +42,48 @@ PopupWindow {
 		onTriggered: root.hide()
 	}
 
-	MouseArea {
-		anchors.fill: parent
-		hoverEnabled: true
-		acceptedButtons: Qt.NoButton
-		onEntered: root.cancelHide()
-		onExited: root.scheduleHide()
-	}
-
 	WrapperRectangle {
 		id: utilities
 		margin: 8
 		radius: 8
 		color: "#bb181818"
 
+		HoverHandler {
+			onHoveredChanged: {
+				if (hovered) {
+					root.cancelHide()
+				} else {
+					root.scheduleHide()
+				}
+			}
+		}
+
 		RowLayout {
 			spacing: 8
 
+			//--------------
+			// audio button
+			//--------------
 			WrapperMouseArea {
+				cursorShape: Qt.PointingHandCursor
 				onClicked: Quickshell.execDetached(["alacritty", "-e", "pipemixer"])
 
-				WrapperRectangle {
+				HoverHandler {
+					id: audioHover
+				}
+
+				// border and hover background
+				Rectangle {
 					radius: 4
 					border.color: "#ebdbb2"
 					border.width: 1
-					color: "transparent"
+					color: audioHover.hovered
+							? "#22ebdbb2"
+							: "transparent"
 					implicitWidth: 64
 					implicitHeight: 48
 
+					// rectangle type only supports one child
 					Item {
 						anchors.fill: parent
 
@@ -89,17 +103,29 @@ PopupWindow {
 				}
 			}
 
+			//------------------
+			// bluetooth button
+			//------------------
 			WrapperMouseArea {
+				cursorShape: Qt.PointingHandCursor
 				onClicked: Quickshell.execDetached(["alacritty", "-e", "bluetui"])
 
-				WrapperRectangle {
+				HoverHandler {
+					id: bluetoothHover
+				}
+
+				// border and hover background
+				Rectangle {
 					radius: 4
 					border.color: "#ebdbb2"
 					border.width: 1
-					color: "transparent"
+					color: bluetoothHover.hovered
+							? "#22ebdbb2"
+							: "transparent"
 					implicitWidth: 64
 					implicitHeight: 48
 
+					// rectangle type only supports one child
 					Item {
 						anchors.fill: parent
 
@@ -119,17 +145,29 @@ PopupWindow {
 				}
 			}
 
+			//-------------
+			// wifi button
+			//-------------
 			WrapperMouseArea {
+				cursorShape: Qt.PointingHandCursor
 				onClicked: Quickshell.execDetached(["alacritty", "-e", "gazelle"])
 
-				WrapperRectangle {
+				HoverHandler {
+					id: wifiHover
+				}
+
+				// border and hover background
+				Rectangle {
 					radius: 4
 					border.color: "#ebdbb2"
 					border.width: 1
-					color: "transparent"
+					color: wifiHover.hovered
+							? "#22ebdbb2"
+							: "transparent"
 					implicitWidth: 64
 					implicitHeight: 48
 
+					// rectangle type only supports one child
 					Item {
 						anchors.fill: parent
 
