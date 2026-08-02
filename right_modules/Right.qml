@@ -4,6 +4,8 @@ import Quickshell
 import Quickshell.Widgets
 
 RowLayout {
+	id: root
+	spacing: 0
 
 	WrapperItem {
 		rightMargin: 8
@@ -12,24 +14,23 @@ RowLayout {
 	}
 	
 	WrapperMouseArea {
-		id: root
-		rightMargin: 8
+		id: systemUsage
 		property string backgroundColor: "transparent"
 
 		hoverEnabled: true
-		onEntered: root.backgroundColor = "#22ebdbb2"
-		onExited: root.backgroundColor = "transparent"
+		onEntered: systemUsage.backgroundColor = "#22ebdbb2"
+		onExited: systemUsage.backgroundColor = "transparent"
 		onClicked: Quickshell.execDetached(["alacritty", "-e", "btop"])
 
 		Rectangle {
-			id: hoverBackground
-			color: root.backgroundColor
+			color: systemUsage.backgroundColor
 			radius: 8
-			implicitWidth: systemStats.implicitWidth + 16
-			implicitHeight: systemStats.implicitHeight + 8
+			implicitWidth: stats.implicitWidth + 16
+			implicitHeight: stats.implicitHeight + 6
+			anchors.verticalCenter: parent.verticalCenter
 
 			RowLayout {
-				id: systemStats
+				id: stats
 				spacing: 16
 				anchors.centerIn: parent
 
@@ -41,35 +42,61 @@ RowLayout {
 	}
 
 	WrapperMouseArea {
-		rightMargin: 16
-		cursorShape: Qt.PointingHandCursor
+		id: controlCenter
+		property string backgroundColor: "transparent"
 
-		onClicked: Quickshell.execDetached(["alacritty", "-e", "pipemixer"])
+		hoverEnabled: true
+		onEntered: controlCenter.backgroundColor = "#22ebdbb2"
+		onExited: controlCenter.backgroundColor = "transparent"
+		onClicked: {
+			Quickshell.execDetached(["alacritty", "-e", "pipemixer"])
+			Quickshell.execDetached(["alacritty", "-e", "bluetui"])
+			Quickshell.execDetached(["alacritty", "-e", "gazelle"])
+		}
 
-		AudioWidget {}
+		Rectangle {
+			color: controlCenter.backgroundColor
+			radius: 8
+			implicitWidth: controls.implicitWidth + 16
+			implicitHeight: controls.implicitHeight + 12
+			anchors.verticalCenter: parent.verticalCenter
+
+			RowLayout {
+				id: controls
+				spacing: 16
+				anchors.centerIn: parent
+
+				AudioWidget {}
+				BluetoothWidget {}
+				NetworkWidget {}
+			}
+		}
 	}
 
 	WrapperMouseArea {
-		rightMargin: 16
-		cursorShape: Qt.PointingHandCursor
+		id: dateTime
+		rightMargin: 8
+		property string backgroundColor: "transparent"
 
-		onClicked: Quickshell.execDetached(["alacritty", "-e", "bluetui"])
+		hoverEnabled: true
+		onEntered: dateTime.backgroundColor = "#22ebdbb2"
+		onExited: dateTime.backgroundColor = "transparent"
+		onClicked: Quickshell.execDetached(["gnome-calendar"])
 
-		BluetoothWidget {}
-	}
+		Rectangle {
+			color: dateTime.backgroundColor
+			radius: 8
+			implicitWidth: clock.implicitWidth + 16
+			implicitHeight: clock.implicitHeight + 14
+			anchors.verticalCenter: parent.verticalCenter
 
-	WrapperMouseArea {
-		rightMargin: 16
-		cursorShape: Qt.PointingHandCursor
+			RowLayout {
+				id: clock
+				spacing: 16
+				anchors.centerIn: parent
 
-		onClicked: Quickshell.execDetached(["alacritty", "-e", "gazelle"])
-
-		NetworkWidget {}
-	}
-
-	WrapperItem {
-		rightMargin: 16
-
-		ClockWidget {}
+				ClockWidget {}
+			}
+		}
 	}
 }
