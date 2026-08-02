@@ -37,13 +37,9 @@ PopupWindow {
 	anchor {
 		edges: Edges.Bottom
 		gravity: Edges.Bottom
-	}
 
-	/* 
-	 * Offsets y position from the top of the screen by the height 
-	 * of the PanelWindow in Bar.qml 
-	 */
-	anchor.rect.y: parentWindow.height
+		margins.top: 40
+	}
 
 	Timer {
 		id: hideTimer
@@ -51,18 +47,20 @@ PopupWindow {
 		onTriggered: root.hide()
 	}
 
-	MouseArea {
-		anchors.fill: parent
-		hoverEnabled: true
-		acceptedButtons: Qt.NoButton
-		onEntered: root.cancelHide()
-		onExited: root.scheduleHide()
-	}
-
 	WrapperRectangle {
 		margin: 8
 		radius: 8
 		color: "#bb181818"
+
+		HoverHandler {
+			onHoveredChanged: {
+				if (hovered) {
+					root.cancelHide()
+				} else {
+					root.scheduleHide()
+				}
+			}
+		}
 
 		RowLayout {
 			id: previews
@@ -83,6 +81,7 @@ PopupWindow {
 						constraintSize: Qt.size(500, 300)
 
 						MouseArea {
+							cursorShape: Qt.PointingHandCursor
 							anchors.fill: parent
 							onClicked: modelData.activate()
 						}
