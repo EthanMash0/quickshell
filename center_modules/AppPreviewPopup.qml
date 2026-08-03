@@ -15,21 +15,27 @@ PopupWindow {
 
 	property var windows: []
 
+	visible: true
+
+	property bool isOpen: true
+
 	function show(wins, anchorItem) {
 		root.windows = wins
 		anchor.item = anchorItem
 		anchor.updateAnchor()
 		cancelHide()
-		visible = true
+		// visible = true
+		root.isOpen = true
 	}
 
 	function hide() {
 		hideTimer.stop()
-		visible = false
+		// visible = false
 		windows = []
 	}
 
 	function scheduleHide() {
+		root.isOpen = false
 		hideTimer.restart()
 	}
 
@@ -57,8 +63,8 @@ PopupWindow {
 				items.splice(0, 2)
 				let angle = items.pop()
 				root.borderAngleDegrees = angle.match(/\d*/)
-				root.border.length
 
+				root.border.length = items.length
 				root.border[0][1] = "#" + items[0]
 				let increment = 1 / (items.length - 1)
 				for (let i = 1; i < items.length; i++) {
@@ -88,19 +94,32 @@ PopupWindow {
 		onTriggered: root.hide()
 	}
 
+	property alias isHovered: previewHoverHandler.hovered
+
+	HoverHandler {
+		id: previewHoverHandler
+		onHoveredChanged: {
+			if (hovered) {
+				root.cancelHide()
+			} else {
+				root.scheduleHide()
+			}
+		}
+	}
+
 	WrapperRectangle {
 		margin: 8
 		radius: 8
 		color: "#bb181818"
 
-		HoverHandler {
-			onHoveredChanged: {
-				if (hovered) {
-					root.cancelHide()
-				} else {
-					root.scheduleHide()
-				}
-			}
+		opacity: root.isOpen ? 1.0 : 0.0
+		scale: root.isOpen ? 1.0 : 0.8
+
+		Behavior on opacity {
+			NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
+		}
+		Behavior on scale {
+			NumberAnimation { duration: 150; easing.type: Easing.OutBack }
 		}
 
 		Row {
@@ -118,6 +137,9 @@ PopupWindow {
 					height: preview.implicitHeight + 4
 					antialiasing: true
 					radius: 5
+					fillColor: "transparent"
+					property ShapeGradient gradientVal: null
+					fillGradient: root.isOpen && preview.isOpen ? border.gradientVal : null
 
 					function makeGradient() {
 						let qml = ``
@@ -143,17 +165,16 @@ PopupWindow {
 						}
 						qml += `}`
 
-						border.fillGradient = Qt.createQmlObject(qml, border, "gradient")
+						border.gradientVal = Qt.createQmlObject(qml, border, "gradient")
 					}
-
 					Component.onCompleted: makeGradient()
 
 					// adds radius to child
 					ClippingWrapperRectangle {
 						anchors.centerIn: parent
-						// rotation: -border.rotation
 						antialiasing: true
 						radius: 4
+						color: "transparent"
 
 						ScreencopyView {
 							id: preview
@@ -162,7 +183,15 @@ PopupWindow {
 							live: true
 							constraintSize: Qt.size(500, 300)
 
+							property bool isOpen: false
+
+							Component.onCompleted: {
+								preview.isOpen = true
+							// 	border.fillGradient = root.isOpen ? border.gradientVal : null
+							}
+
 							MouseArea {
+								cursorShape: Qt.PointingHandCursor
 								anchors.fill: parent
 								onClicked: modelData.activate()
 							}

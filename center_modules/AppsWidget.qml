@@ -84,11 +84,17 @@ RowLayout {
 				onTriggered: if (isOpen) previewPopup.show(windows, appBtn)
 			}
 
+			Timer {
+				id: exitTimer
+				interval: 200
+				onTriggered: if (!previewPopup.isHovered) previewPopup.scheduleHide()
+			}
+
 			onEntered: {
 				if (!isOpen) return
 				previewPopup.cancelHide()
 
-				if (previewPopup.visible) {
+				if (previewPopup.isOpen) {
 					previewPopup.show(windows, appBtn)
 				} else {
 					previewTimer.restart()
@@ -97,7 +103,7 @@ RowLayout {
 
 			onExited: {
 				previewTimer.stop()
-				previewPopup.scheduleHide()
+				exitTimer.restart()
 			}
 		}
 	}
