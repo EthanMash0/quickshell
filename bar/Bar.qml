@@ -1,8 +1,8 @@
 import Quickshell
 
-import "right_modules"
-import "center_modules"
-import "left_modules"
+import "right"
+import "center"
+import "left"
 
 Scope {
 	Variants {
