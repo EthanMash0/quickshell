@@ -22,7 +22,6 @@ Rectangle {
 			id: searchField
 			Layout.fillWidth: true
 
-			onFocusListRequested: resultsList.forceActiveFocus()
 			onMoveSelectionRequested: delta => resultsList.moveSelection(delta)
 			onLaunchRequested: resultsList.launchSelected()
 			onScrollToTopRequested: resultsList.resetScroll()
@@ -35,8 +34,6 @@ Rectangle {
 			id: resultsList
 			Layout.fillWidth: true
 			Layout.fillHeight: true
-
-			onFocusSearchRequested: searchField.forceActiveFocus()
 		}
 	}
 

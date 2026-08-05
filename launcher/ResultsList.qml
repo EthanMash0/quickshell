@@ -6,18 +6,11 @@ import Quickshell.Widgets
 ListView {
 	id: root
 
-	signal focusSearchRequested()
-
 	//---------
 	// styling
 	//---------
 	clip: true
 	spacing: 4
-	focus: true
-	activeFocusOnTab: false
-	keyNavigationEnabled: false
-	interactive: true
-	boundsBehavior: Flickable.StopAtBounds
 	model: root.results
 
 	//----------------------------
@@ -119,35 +112,6 @@ ListView {
 			root.contentY = Math.max(0, Math.min(maxY, y))
 		else if (y + h > bottom)
 			root.contentY = Math.max(0, Math.min(maxY, y + h - root.height))
-	}
-
-	//----------
-	// keybinds
-	//----------
-	Keys.onPressed: event => {
-		if (event.key === Qt.Key_Tab) {
-			root.focusSearchRequested()
-			event.accepted = true
-		} else if (event.key === Qt.Key_J || event.key === Qt.Key_Down) {
-			root.moveSelection(1)
-			event.accepted = true
-		} else if (event.key === Qt.Key_K || event.key === Qt.Key_Up) {
-			root.moveSelection(-1)
-			event.accepted = true
-		} else if (event.key === Qt.Key_G && event.modifiers & Qt.ShiftModifier) {
-			root.setSelection(root.results.length - 1)
-			event.accepted = true
-		} else if (event.key === Qt.Key_G) {
-			root.setSelection(0)
-			event.accepted = true
-		} else if (
-			event.key === Qt.Key_Return
-			|| event.key === Qt.Key_Enter
-			|| event.key === Qt.Key_L
-		) {
-			root.launchSelected()
-			event.accepted = true
-		}
 	}
 
 	//----------

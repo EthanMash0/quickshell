@@ -7,7 +7,6 @@ TextField {
 	//------------------------
 	// signals to parent card
 	//------------------------
-	signal focusListRequested()
 	signal moveSelectionRequested(int delta)
 	signal launchRequested()
 	signal scrollToTopRequested()
@@ -16,8 +15,6 @@ TextField {
 	// field styling
 	//---------------
 	implicitHeight: 36
-	focus: true
-	activeFocusOnTab: false
 
 	placeholderText: "Search apps..."
 	placeholderTextColor: "#88ebdbb2"
@@ -29,7 +26,7 @@ TextField {
 	background: Rectangle {
 		radius: 6
 		color: "#33181818"
-		border.color: root.activeFocus ? "#ebdbb2" : "#66ebdbb2"
+		border.color: "#66ebdbb2"
 		border.width: 1
 	}
 
@@ -50,12 +47,9 @@ TextField {
 	//----------
 	Keys.onPressed: event => {
 		if (event.key === Qt.Key_Tab) {
-			root.focusListRequested()
-			event.accepted = true
-		} else if (event.key === Qt.Key_Down) {
 			root.moveSelectionRequested(1)
 			event.accepted = true
-		} else if (event.key === Qt.Key_Up) {
+		} else if (event.key === Qt.Key_Backtab) {
 			root.moveSelectionRequested(-1)
 			event.accepted = true
 		} else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
