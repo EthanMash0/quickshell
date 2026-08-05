@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Controls
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
@@ -11,8 +12,12 @@ RowLayout {
 		id: previewPopup 
 	}
 
+	AppMenuPopup {
+		id: appMenu
+	}
+
 	Repeater {
-		model: DesktopEntries.applications
+		model: DockState.items
 
 		WrapperMouseArea {
 			id: appBtn
@@ -20,90 +25,92 @@ RowLayout {
 			leftMargin: 4
 			cursorShape: Qt.PointingHandCursor
 
-			// --------------
-			// app button
-			// --------------
 			required property var modelData
-			// acceptedButtons: Qt.LeftButton | Qt.RightButton 
+
+			readonly property var entry: modelData.entry
+			readonly property bool pinned: modelData.pinned
+
+			readonly property var windows: DockState.windowsFor(entry)
+			readonly property int instanceCount: windows.length
+			readonly property bool appRunning: instanceCount > 0
+
+			//---------------
+			// click actions
+			//---------------
+			acceptedButtons: Qt.LeftButton | Qt.RightButton 
 
 			onClicked: (mouse) => {
 				if (mouse.button === Qt.RightButton) {
-					modelData.execute()
+					previewPopup.hide()
+					// test.restart()
+					appMenu.show(appBtn, windows, entry, pinned)
+					return
 				}
 
-				if (mouse.button === Qt.LeftButton) {
-					modelData.execute()
+				entry.execute()
+				previewPopup.scheduleHide()
+				appMenu.scheduleHide()
+			}
+
+			// ------
+			// hover
+			// ------
+			HoverHandler {
+				id: appHover
+				onHoveredChanged: {
+					if (hovered) {
+						previewTimer.restart()
+					} else {
+						previewTimer.stop()
+						exitTimer.restart()
+
+						appMenu.scheduleHide()
+					}
 				}
 			}
 
-			// find all top level application instances using Quickshell.Wayland
-			readonly property var windows: ToplevelManager.toplevels.values.filter(app => {
-				const id = (app.appId || "").toLowerCase()
-				return id === modelData.id?.toLowerCase()
-					|| id === modelData.startupClass?.toLowerCase()
-			})
+			Timer {
+				id: previewTimer
+				interval: 1500
+				onTriggered: if (appRunning && !appMenu.visible) {
+					previewPopup.show(appBtn, windows)
+				}
+			}
 
-			readonly property int instanceCount: windows.length
-			readonly property bool isOpen: instanceCount > 0
-			// readonly property bool isFocused: windows.some(app => app.activated)
+			Timer {
+				id: exitTimer
+				interval: 400
+				onTriggered: {
+					if (!previewPopup.isHovered) {
+						previewPopup.scheduleHide()
+					}
+				}
+			}
 
-
-			// draw app icon image and running indicator
+			//----------------------------
+			// icon and running indicator
+			//----------------------------
 			Item {
 				implicitWidth: icon.implicitWidth
 				implicitHeight: 36
 
 				IconImage {
 					id: icon
-					source: Quickshell.iconPath(modelData.icon, true)
+					source: Quickshell.iconPath(entry.icon, true)
 					implicitSize: 24
 					anchors.verticalCenter: parent.verticalCenter
 				}
 
 				WrapperRectangle {
-					visible: isOpen
+					visible: appRunning
 					anchors.horizontalCenter: parent.horizontalCenter
 					anchors.bottom: parent.bottom
-					// bottomMargin: 2
 
 					width: 28
 					height: 1.5
 					radius: 1
 					color: "#ebdbb2"
 				}
-			}
-
-			// --------------
-			// hover preview
-			// --------------
-			hoverEnabled: true
-
-			Timer {
-				id: previewTimer
-				interval: 1000
-				onTriggered: if (isOpen) previewPopup.show(windows, appBtn)
-			}
-
-			Timer {
-				id: exitTimer
-				interval: 200
-				onTriggered: if (!previewPopup.isHovered) previewPopup.scheduleHide()
-			}
-
-			onEntered: {
-				if (!isOpen) return
-				previewPopup.cancelHide()
-
-				if (previewPopup.isOpen) {
-					previewPopup.show(windows, appBtn)
-				} else {
-					previewTimer.restart()
-				}
-			}
-
-			onExited: {
-				previewTimer.stop()
-				exitTimer.restart()
 			}
 		}
 	}

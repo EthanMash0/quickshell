@@ -5,37 +5,63 @@ import QtQuick.Shapes.DesignHelpers
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
+import Quickshell.Hyprland
 import Quickshell.Io
 
-PopupWindow {
+PanelWindow {
 	id: root
-	color: "transparent"
-	implicitWidth: previews.implicitWidth + 16
-	implicitHeight: previews.implicitHeight + 16
 
+	color: "transparent"
+	visible: false
+
+	exclusionMode: ExclusionMode.Ignore
+	WlrLayershell.layer: WlrLayer.Overlay
+
+	onWidthChanged: if (visible) root.reposition()
+	onHeightChanged: if (visible) root.reposition()
+
+	//-------------------
+	// public properties
+	//-------------------
+	property var anchorItem: null
+	property alias isHovered: previewHoverHandler.hovered
 	property var windows: []
 
-	visible: true
+	//----------------------------
+	// private / local properties
+	//----------------------------
+	property real borderAngleDegrees: 0 // for setting gradient background
+	property real borderAngleRadians: root.borderAngleDegrees * Math.PI / 180
+	property real borderRatioX: Math.cos(root.borderAngleRadians)
+	property real borderRatioY: Math.sin(root.borderAngleRadians)
+	property var border: [
+		[ 0.0, "Transparent" ]
+	]
 
-	property bool isOpen: true
+	//-------------
+	// show / hide
+	//-------------
+	function show(anchorItem, windows) {
+		root.anchorItem = anchorItem
+		root.windows = windows
 
-	function show(wins, anchorItem) {
-		root.windows = wins
-		anchor.item = anchorItem
-		anchor.updateAnchor()
+		const screen = anchorItem.Window?.window?.screen
+		if (screen) {
+			root.screen = screen
+		}
+
 		cancelHide()
-		// visible = true
-		root.isOpen = true
+		root.visible = true
+		Qt.callLater(root.reposition)
 	}
 
 	function hide() {
-		hideTimer.stop()
-		// visible = false
-		windows = []
+		root.visible = false
+		root.windows = []
+		root.anchorItem = null
 	}
 
 	function scheduleHide() {
-		root.isOpen = false
 		hideTimer.restart()
 	}
 
@@ -43,10 +69,33 @@ PopupWindow {
 		hideTimer.stop()
 	}
 
-	property real borderAngleDegrees: 0
-	property var border: [
-		[ 0.0, "Transparent" ]
-	]
+	// accounts for selecting a different app icon
+	function reposition() {
+		if (!root.anchorItem || !root.visible) {
+			return
+		}
+
+		const item = root.anchorItem
+		// below the icon, horizontally centered on it
+		const g = item.mapToGlobal(0, item.height)
+		const local = root.contentItem.mapFromGlobal(g.x, g.y) 
+
+		menu.x = local.x + (item.width - menu.width) / 2
+		menu.y = local.y + 8
+	}
+
+	anchors {
+		top: true
+		bottom: true
+		left: true
+		right: true
+	}
+
+	Timer {
+		id: hideTimer
+		interval: 400
+		onTriggered: root.hide()
+	}
 
 	Process {
 		command: [
@@ -73,53 +122,23 @@ PopupWindow {
 						"#" + items[i]
 					]
 				}
-			}
-		}
-	}
-
-	property real borderAngleRadians: root.borderAngleDegrees * Math.PI / 180
-	property real borderRatioX: Math.cos(root.borderAngleRadians)
-	property real borderRatioY: Math.sin(root.borderAngleRadians)
-
-	anchor {
-		edges: Edges.Bottom
-		gravity: Edges.Bottom
-
-		margins.top: 40
-	}
-
-	Timer {
-		id: hideTimer
-		interval: 200
-		onTriggered: root.hide()
-	}
-
-	property alias isHovered: previewHoverHandler.hovered
-
-	HoverHandler {
-		id: previewHoverHandler
-		onHoveredChanged: {
-			if (hovered) {
-				root.cancelHide()
-			} else {
-				root.scheduleHide()
-			}
+			} 
 		}
 	}
 
 	WrapperRectangle {
+		id: menu
 		margin: 8
 		radius: 8
-		color: "#bb181818"
+		color: "#181818"
 
-		opacity: root.isOpen ? 1.0 : 0.0
-		scale: root.isOpen ? 1.0 : 0.8
-
-		Behavior on opacity {
-			NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
-		}
-		Behavior on scale {
-			NumberAnimation { duration: 150; easing.type: Easing.OutBack }
+		HoverHandler {
+			id: previewHoverHandler
+			onHoveredChanged: {
+				if (!hovered) {
+					root.scheduleHide()
+				}
+			}
 		}
 
 		Row {
@@ -139,7 +158,12 @@ PopupWindow {
 					radius: 5
 					fillColor: "transparent"
 					property ShapeGradient gradientVal: null
-					fillGradient: root.isOpen && preview.isOpen ? border.gradientVal : null
+					fillGradient: {
+						root.visible
+						preview.visible 
+							? border.gradientVal 
+							: null
+					}
 
 					function makeGradient() {
 						let qml = ``
@@ -182,13 +206,6 @@ PopupWindow {
 							captureSource: modelData
 							live: true
 							constraintSize: Qt.size(500, 300)
-
-							property bool isOpen: false
-
-							Component.onCompleted: {
-								preview.isOpen = true
-							// 	border.fillGradient = root.isOpen ? border.gradientVal : null
-							}
 
 							MouseArea {
 								cursorShape: Qt.PointingHandCursor

@@ -4,21 +4,35 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
 
-PopupWindow {
+PanelWindow {
 	id: root
-	color: "transparent"
-	implicitWidth: utilities.implicitWidth + 16
-	implicitHeight: utilities.implicitHeight + 16
 
+	color: "transparent"
+	visible: false
+
+	exclusionMode: ExclusionMode.Ignore
+	WlrLayershell.layer: WlrLayer.Overlay
+
+	onWidthChanged: if (visible) root.reposition()
+	onHeightChanged: if (visible) root.reposition()
+
+	//-------------------
+	// public properties
+	//-------------------
+	property var anchorItem: null
+	
+	//-------------
+	// show / hide
+	//-------------
 	function show(anchorItem) {
-		anchor.item = anchorItem
-		anchor.updateAnchor()
+		root.anchorItem = anchorItem
+
 		cancelHide()
 		visible = true
+		Qt.callLater(root.reposition)
 	}
 
 	function hide() {
-		hideTimer.stop()
 		visible = false
 	}
 
@@ -27,13 +41,28 @@ PopupWindow {
 	}
 
 	function cancelHide() {
-		hideTimer.stop() }
+		hideTimer.stop() 
+	}
 
-	anchor {
-		edges: Edges.Bottom
-		gravity: Edges.Bottom
+	function reposition() {
+		if (!root.anchorItem || !root.visible) {
+			return
+		}
 
-		margins.top: 40
+		const item = root.anchorItem
+		// below the icon, horizontally centered on it
+		const g = item.mapToGlobal(0, item.height)
+		const local = root.contentItem.mapFromGlobal(g.x, g.y) 
+
+		menu.x = local.x + (item.width - menu.width) / 2
+		menu.y = local.y + 8
+	}
+
+	anchors {
+		top: true
+		bottom: true
+		left: true
+		right: true
 	}
 
 	Timer {
@@ -41,12 +70,20 @@ PopupWindow {
 		interval: 400
 		onTriggered: root.hide()
 	}
+	
+	// close menu on outside click
+	MouseArea {
+		anchors.fill: parent
+		onClicked: root.hide()
+	}
 
 	WrapperRectangle {
-		id: utilities
+		id: menu
 		margin: 8
 		radius: 8
-		color: "#bb181818"
+		color: "#181818"
+		// border.color: "#ebdbb2"
+		// border.width: 1
 
 		HoverHandler {
 			onHoveredChanged: {

@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
+import Quickshell.Hyprland
 
 PanelWindow {
 	id: root
@@ -20,12 +21,18 @@ PanelWindow {
 	// public properties
 	//-------------------
 	property var anchorItem: null
+	property var windows: []
+	property var entry: null // selected desktop entry
+	property bool pinned: false // entry pinned status
 
 	//-------------
 	// show / hide
 	//-------------
-	function show(anchorItem) {
+	function show(anchorItem, windows, entry, pinned) {
 		root.anchorItem = anchorItem
+		root.windows = windows
+		root.entry = entry
+		root.pinned = pinned
 
 		const screen = anchorItem.Window.window?.screen
 		if (screen) {
@@ -39,6 +46,9 @@ PanelWindow {
 
 	function hide() {
 		root.visible = false
+		root.entry = null
+		root.windows = []
+		root.anchorItem = null
 	}
 
 	function scheduleHide() {
@@ -46,9 +56,10 @@ PanelWindow {
 	}
 
 	function cancelHide() {
-		hideTimer.stop() 
+		hideTimer.stop()
 	}
 
+	// accounts for selecting a different app icon
 	function reposition() {
 		if (!root.anchorItem || !root.visible) {
 			return
@@ -59,7 +70,7 @@ PanelWindow {
 		const g = item.mapToGlobal(0, item.height)
 		const local = root.contentItem.mapFromGlobal(g.x, g.y) 
 
-		menu.x = local.x
+		menu.x = local.x + (item.width - menu.width) / 2
 		menu.y = local.y + 8
 	}
 
@@ -74,6 +85,13 @@ PanelWindow {
 		id: hideTimer
 		interval: 400
 		onTriggered: root.hide()
+	}
+
+	// dismiss
+	Shortcut {
+		sequence: "Escape"
+		enabled: root.visible
+		context: Qt.WindowShortcut
 	}
 
 	// close menu on outside click
@@ -101,102 +119,90 @@ PanelWindow {
 		}
 
 		ColumnLayout {
-			spacing: 8
+			spacing: 4
 
-			//--------------
-			// sleep button
-			//--------------
+			// app name header
+			Text {
+				Layout.fillWidth: true
+				rightPadding: 4
+				leftPadding: 4
+				color: "#88ebdbb2"
+				font.pixelSize: 11
+				elide: Text.ElideRight
+				text: root.entry 
+						? (root.entry.name || root.entry.id) 
+						: ""
+			}
+
+			//-----------
+			// close all
+			//-----------
 			WrapperMouseArea {
-				id: sleepButton
+				visible: root.windows.length > 0
 				cursorShape: Qt.PointingHandCursor
 				onClicked: {
+					DockState.closeAll(root.windows)
 					root.hide()
-
-					Quickshell.execDetached([
-						"sh",
-						"-c",
-						"systemctl suspend"
-					])
 				}
 
 				HoverHandler {
-					id: sleepHover
+					id: closeHover
 				}
 
 				Rectangle {
 					radius: 4
-					color: sleepHover.hovered
+					color: closeHover.hovered
 							? "#22ebdbb2"
 							: "transparent"
-					implicitWidth: 80
+					implicitWidth: 160
 					implicitHeight: 24
 
 					Text {
+						anchors.verticalCenter: parent.verticalCenter
+						leftPadding: 4
 						color: "#ebdbb2"
 						font.pixelSize: 14
-						text: "Sleep"
-						leftPadding: 4
-						anchors.verticalCenter: parent.verticalCenter
+						text: "   Close all windows"
 					}
 				}
 			}
 
-			//----------------
-			// restart button
-			//----------------
+			//-------------
+			// pin / unpin
+			//-------------
 			WrapperMouseArea {
-				id: restartButton
 				cursorShape: Qt.PointingHandCursor
-				onClicked: Quickshell.execDetached(["systemctl", "reboot"])
+				onClicked: {
+					if (!root.entry) return
 
-				HoverHandler {
-					id: restartHover
-				}
-
-				Rectangle {
-					radius: 4
-					color: restartHover.hovered
-							? "#22ebdbb2"
-							: "transparent"
-					implicitWidth: 80
-					implicitHeight: 24
-
-					Text {
-						color: "#ebdbb2"
-						font.pixelSize: 14
-						text: "Restart"
-						leftPadding: 4
-						anchors.verticalCenter: parent.verticalCenter
+					if (root.pinned) {
+						DockState.unpin(root.entry.id)
+					} else {
+						DockState.pin(root.entry.id)
 					}
+					root.hide()
 				}
-			}
-
-			//------------------
-			// shut down button
-			//------------------
-			WrapperMouseArea {
-				id: shutDownButton
-				cursorShape: Qt.PointingHandCursor
-				onClicked: Quickshell.execDetached(["systemctl", "poweroff"])
 
 				HoverHandler {
-					id: shutDownHover
+					id: pinHover
 				}
 
 				Rectangle {
 					radius: 4
-					color: shutDownHover.hovered
-							? "#22ebdbb2"
-							: "transparent"
-					implicitWidth: 80
+					color: pinHover.hovered
+								? "#22ebdbb2"
+								: "transparent"
+					implicitWidth: 160
 					implicitHeight: 24
 
 					Text {
+						anchors.verticalCenter: parent.verticalCenter
+						leftPadding: 4
 						color: "#ebdbb2"
 						font.pixelSize: 14
-						text: "Shut Down"
-						leftPadding: 4
-						anchors.verticalCenter: parent.verticalCenter
+						text: root.pinned
+								? "󰐄   Remove from bar"
+								: "󰐃   Keep in bar"
 					}
 				}
 			}
