@@ -5,6 +5,8 @@ import Quickshell
 import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 
+import "../../theme"
+
 RowLayout {
 	id: root
 	property bool isOpen: true
@@ -35,8 +37,8 @@ RowLayout {
 		onClicked: root.isOpen = !root.isOpen
 
 		Text {
-			color: "#ebdbb2"
-			font.pixelSize: 16
+			color: Theme.text
+			font.pixelSize: Theme.fontSize(16)
 			text: root.isOpen 
 				? ">" 
 				: "<"

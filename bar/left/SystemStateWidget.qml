@@ -1,10 +1,12 @@
 import QtQuick
 import QtQuick.Layouts
 
+import "../../theme"
+
 RowLayout {
 	Text {
-		color: "#ebdbb2"
-		font.pixelSize: 16
+		color: Theme.text
+		font.pixelSize: Theme.fontSize(16)
 		text: "󰣇"
 	}
 }

@@ -44,6 +44,20 @@ Singleton {
 		return result
 	}
 
+	// the pin list in order, resolved to desktop entries. entries that no longer
+	// resolve are kept with a null entry so the settings page can show them as
+	// broken rather than silently dropping them like `items` above does
+	readonly property var pinnedEntries: {
+		const result = []
+
+		for (let i = 0; i < root.pinnedIds.length; i++) {
+			const id = root.pinnedIds[i]
+			result.push({ id: id, entry: root.entryForId(id) })
+		}
+
+		return result
+	}
+
 	//-----------------
 	// pin persistence
 	//-----------------
@@ -101,6 +115,21 @@ Singleton {
 
 		const key = id.toLowerCase()
 		root.pinnedIds = root.pinnedIds.filter(p => (p || "").toLowerCase() !== key)
+	}
+
+	// moves the pin at `from` to `to`, clamping rather than wrapping so the
+	// buttons at either end of the settings list simply do nothing
+	function move(from, to) {
+		const next = root.pinnedIds.slice()
+
+		if (from < 0 || from >= next.length) return
+		if (to < 0 || to >= next.length) return
+		if (from === to) return
+
+		const [moved] = next.splice(from, 1)
+		next.splice(to, 0, moved)
+
+		root.pinnedIds = next
 	}
 
 	function windowsFor(entry) {

@@ -3,6 +3,8 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
 
+import "../theme"
+
 ListView {
 	id: root
 
@@ -135,11 +137,11 @@ ListView {
 		Rectangle {
 			implicitWidth: root.width
 			implicitHeight: 44
-			radius: 6
+			radius: Theme.radiusSmall
 			color: index === LauncherState.selectedIndex
-				? (root.activeFocus ? "#33ebdbb2" : "#22ebdbb2")
+				? (root.activeFocus ? Theme.selection : Theme.selectionSoft)
 				: row.containsMouse
-					? "#12ebdbb2"
+					? Theme.hoverFaint
 					: "transparent"
 
 			RowLayout {
@@ -159,8 +161,9 @@ ListView {
 
 					Text {
 						Layout.fillWidth: true
-						color: "#ebdbb2"
-						font.pixelSize: 14
+						color: Theme.text
+						font.family: Theme.labelFont
+						font.pixelSize: Theme.fontSize(14)
 						elide: Text.ElideRight
 						text: modelData.name || modelData.id
 					}
@@ -168,8 +171,9 @@ ListView {
 					Text {
 						Layout.fillWidth: true
 						visible: !!(modelData.genericName && modelData.genericName.length)
-						color: "#88ebdbb2"
-						font.pixelSize: 11
+						color: Theme.textMuted
+						font.family: Theme.labelFont
+						font.pixelSize: Theme.fontSize(11)
 						elide: Text.ElideRight
 						text: modelData.genericName || ""
 					}

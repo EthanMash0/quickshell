@@ -4,6 +4,8 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
 
+import "../../theme"
+
 PanelWindow {
 	id: root
 
@@ -85,10 +87,10 @@ PanelWindow {
 	WrapperRectangle {
 		id: menu
 		margin: 8
-		radius: 8
-		color: "#181818"
-		border.color: "#ebdbb2"
-		border.width: 1
+		radius: Theme.radius
+		color: Theme.surface
+		border.color: Theme.border
+		border.width: Theme.borderWidth
 
 		HoverHandler {
 			onHoveredChanged: {
@@ -124,16 +126,17 @@ PanelWindow {
 				}
 
 				Rectangle {
-					radius: 4
+					radius: Theme.radiusSmall
 					color: sleepHover.hovered
-							? "#22ebdbb2"
+							? Theme.hover
 							: "transparent"
 					implicitWidth: 80
 					implicitHeight: 24
 
 					Text {
-						color: "#ebdbb2"
-						font.pixelSize: 14
+						color: Theme.text
+						font.family: Theme.labelFont
+						font.pixelSize: Theme.fontSize(14)
 						text: "Sleep"
 						leftPadding: 4
 						anchors.verticalCenter: parent.verticalCenter
@@ -154,16 +157,17 @@ PanelWindow {
 				}
 
 				Rectangle {
-					radius: 4
+					radius: Theme.radiusSmall
 					color: restartHover.hovered
-							? "#22ebdbb2"
+							? Theme.hover
 							: "transparent"
 					implicitWidth: 80
 					implicitHeight: 24
 
 					Text {
-						color: "#ebdbb2"
-						font.pixelSize: 14
+						color: Theme.text
+						font.family: Theme.labelFont
+						font.pixelSize: Theme.fontSize(14)
 						text: "Restart"
 						leftPadding: 4
 						anchors.verticalCenter: parent.verticalCenter
@@ -184,16 +188,17 @@ PanelWindow {
 				}
 
 				Rectangle {
-					radius: 4
+					radius: Theme.radiusSmall
 					color: shutDownHover.hovered
-							? "#22ebdbb2"
+							? Theme.hover
 							: "transparent"
 					implicitWidth: 80
 					implicitHeight: 24
 
 					Text {
-						color: "#ebdbb2"
-						font.pixelSize: 14
+						color: Theme.text
+						font.family: Theme.labelFont
+						font.pixelSize: Theme.fontSize(14)
 						text: "Shut Down"
 						leftPadding: 4
 						anchors.verticalCenter: parent.verticalCenter

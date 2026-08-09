@@ -3,6 +3,9 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
 
+import "../../theme"
+import "../../prefs"
+
 RowLayout {
 	id: root
 	spacing: 0
@@ -22,7 +25,7 @@ RowLayout {
 	WrapperMouseArea {
 		id: systemUsage
 		cursorShape: Qt.PointingHandCursor
-		onClicked: Quickshell.execDetached(["alacritty", "-e", "btop"])
+		onClicked: Prefs.run(Prefs.systemMonitorCommand)
 
 		HoverHandler {
 			id: systemUsageHover
@@ -31,9 +34,9 @@ RowLayout {
 		// hover background
 		Rectangle {
 			color: systemUsageHover.hovered
-					? "#22ebdbb2"
+					? Theme.hover
 					: "transparent"
-			radius: 8
+			radius: Theme.radius
 			implicitWidth: stats.implicitWidth + 16
 			implicitHeight: stats.implicitHeight + 6
 
@@ -80,9 +83,9 @@ RowLayout {
 		// hover background
 		Rectangle {
 			color: controlCenterHover.hovered
-					? "#22ebdbb2"
+					? Theme.hover
 					: "transparent"
-			radius: 8
+			radius: Theme.radius
 			implicitWidth: controls.implicitWidth + 16
 			implicitHeight: controls.implicitHeight + 12
 
@@ -105,7 +108,7 @@ RowLayout {
 		id: dateTime
 		rightMargin: 8
 		cursorShape: Qt.PointingHandCursor
-		onClicked: Quickshell.execDetached(["gnome-calendar"])
+		onClicked: Prefs.run(Prefs.calendarCommand)
 
 		HoverHandler {
 			id: dateTimeHover
@@ -114,9 +117,9 @@ RowLayout {
 		// hover background
 		Rectangle {
 			color: dateTimeHover.hovered
-					? "#22ebdbb2"
+					? Theme.hover
 					: "transparent"
-			radius: 8
+			radius: Theme.radius
 			implicitWidth: clock.implicitWidth + 16
 			implicitHeight: clock.implicitHeight + 14
 

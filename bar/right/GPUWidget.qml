@@ -3,25 +3,29 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
 
+import "../../theme"
+
 RowLayout {
 	Text {
-		color: "#ebdbb2"
-		font.pixelSize: 18
+		color: Theme.text
+		font.pixelSize: Theme.fontSize(18)
 		text: ""
 	}
 
 	ColumnLayout {
 		Text {
-			color: "#ebdbb2"
-			font.pixelSize: 12
+			color: Theme.text
+			font.family: Theme.labelFont
+			font.pixelSize: Theme.fontSize(12)
 			font.bold: true
 			text: `${SystemUsage.gpuPercent}%`
 			bottomPadding: -6
 		}
 
 		Text {
-			color: "#ebdbb2"
-			font.pixelSize: 10
+			color: Theme.text
+			font.family: Theme.labelFont
+			font.pixelSize: Theme.fontSize(10)
 			text: "GPU  "
 		}
 	}

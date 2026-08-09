@@ -2,12 +2,14 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Bluetooth
 
+import "../../theme"
+
 RowLayout {
 	readonly property var adapter: Bluetooth.defaultAdapter
 
 	Text {
-		color: "#ebdbb2"
-		font.pixelSize: 16
+		color: Theme.text
+		font.pixelSize: Theme.fontSize(16)
 		text: {
 			const a = adapter
 			if (!a) return "󰂲"

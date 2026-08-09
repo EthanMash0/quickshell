@@ -3,6 +3,8 @@ import QtQuick.Layouts
 import Quickshell.Widgets
 import Quickshell.Hyprland
 
+import "../../theme"
+
 RowLayout {
 	Repeater {
 		model: 5
@@ -21,16 +23,17 @@ RowLayout {
 			WrapperRectangle {
 				implicitWidth: 16
 				leftMargin: 4
-				radius: 4
+				radius: Theme.radiusSmall
 				color: focused 
-					? "#ebdbb2" 
+					? Theme.highlight 
 					: "transparent"
 
 				Text {
 					color: focused
-						? "#181818"
-						: "#ebdbb2"
-					font.pixelSize: 16
+						? Theme.onHighlight
+						: Theme.text
+					font.family: Theme.labelFont
+					font.pixelSize: Theme.fontSize(16)
 					text: `${index + 1}`
 				}
 			}

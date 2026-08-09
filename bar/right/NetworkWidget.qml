@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Networking
 
+import "../../theme"
+
 RowLayout {
 	id: root
 
@@ -38,8 +40,8 @@ RowLayout {
 																: 0
 
 	Text {
-		color: "#ebdbb2"
-		font.pixelSize: 16
+		color: Theme.text
+		font.pixelSize: Theme.fontSize(16)
 		text: {
 			// prefer ethernet when it is in use
 			if (root.wiredDevice) {

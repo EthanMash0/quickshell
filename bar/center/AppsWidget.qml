@@ -5,6 +5,8 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
 
+import "../../theme"
+
 RowLayout {
 	id: root
 
@@ -109,7 +111,7 @@ RowLayout {
 					width: 28
 					height: 1.5
 					radius: 1
-					color: "#ebdbb2"
+					color: Theme.highlight
 				}
 			}
 		}

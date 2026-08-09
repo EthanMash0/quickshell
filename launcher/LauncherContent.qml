@@ -1,14 +1,16 @@
 import QtQuick
 import QtQuick.Layouts
 
+import "../theme"
+
 Rectangle {
 	id: root
-	width: 480
-	height: 560
-	radius: 8
-	color: "#181818"
-	border.color: "#ebdbb2"
-	border.width: 1
+	width: Theme.launcherWidth
+	height: Theme.launcherHeight
+	radius: Theme.radius
+	color: Theme.surface
+	border.color: Theme.border
+	border.width: Theme.borderWidth
 
 	ColumnLayout {
 		anchors.fill: parent

@@ -3,6 +3,8 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
 
+import "../../theme"
+
 RowLayout {
 
 	//---------------------------
@@ -38,9 +40,9 @@ RowLayout {
 		// hover background
 		Rectangle {
 			color: systemStateHover.hovered
-					? "#22ebdbb2"
+					? Theme.hover
 					: "transparent"
-			radius: 8
+			radius: Theme.radius
 			implicitWidth: icon.implicitWidth + 16
 			implicitHeight: icon.implicitHeight + 14
 

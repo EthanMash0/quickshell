@@ -8,6 +8,8 @@ import Quickshell.Widgets
 import Quickshell.Hyprland
 import Quickshell.Io
 
+import "../../theme"
+
 PanelWindow {
 	id: root
 
@@ -129,8 +131,8 @@ PanelWindow {
 	WrapperRectangle {
 		id: menu
 		margin: 8
-		radius: 8
-		color: "#181818"
+		radius: Theme.radius
+		color: Theme.surface
 
 		HoverHandler {
 			id: previewHoverHandler

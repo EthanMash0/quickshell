@@ -1,7 +1,10 @@
 import QtQuick
 
+import "../../theme"
+
 Text {
-	color: "#ebdbb2"
-	font.pixelSize: 16
+	color: Theme.text
+	font.family: Theme.labelFont
+	font.pixelSize: Theme.fontSize(16)
 	text: Time.time
 }

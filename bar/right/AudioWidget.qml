@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Pipewire
 
+import "../../theme"
+
 RowLayout {
 	id: root
 
@@ -17,8 +19,8 @@ RowLayout {
 	}
 
 	Text {
-		color: "#ebdbb2"
-		font.pixelSize: 16
+		color: Theme.text
+		font.pixelSize: Theme.fontSize(16)
 		text: {
 			if (!root.ready) {
 				return "󰖁"

@@ -5,6 +5,8 @@ import Quickshell.Wayland
 import Quickshell.Widgets
 import Quickshell.Hyprland
 
+import "../../theme"
+
 PanelWindow {
 	id: root
 
@@ -103,10 +105,10 @@ PanelWindow {
 	WrapperRectangle {
 		id: menu
 		margin: 8
-		radius: 8
-		color: "#181818"
-		border.color: "#ebdbb2"
-		border.width: 1
+		radius: Theme.radius
+		color: Theme.surface
+		border.color: Theme.border
+		border.width: Theme.borderWidth
 
 		HoverHandler {
 			onHoveredChanged: {
@@ -126,8 +128,9 @@ PanelWindow {
 				Layout.fillWidth: true
 				rightPadding: 4
 				leftPadding: 4
-				color: "#88ebdbb2"
-				font.pixelSize: 11
+				color: Theme.textMuted
+				font.family: Theme.labelFont
+				font.pixelSize: Theme.fontSize(11)
 				elide: Text.ElideRight
 				text: root.entry 
 						? (root.entry.name || root.entry.id) 
@@ -150,9 +153,9 @@ PanelWindow {
 				}
 
 				Rectangle {
-					radius: 4
+					radius: Theme.radiusSmall
 					color: closeHover.hovered
-							? "#22ebdbb2"
+							? Theme.hover
 							: "transparent"
 					implicitWidth: 160
 					implicitHeight: 24
@@ -160,8 +163,9 @@ PanelWindow {
 					Text {
 						anchors.verticalCenter: parent.verticalCenter
 						leftPadding: 4
-						color: "#ebdbb2"
-						font.pixelSize: 14
+						// keeps the default font because the label embeds a nerd font glyph
+						color: Theme.text
+						font.pixelSize: Theme.fontSize(14)
 						text: "   Close all windows"
 					}
 				}
@@ -188,9 +192,9 @@ PanelWindow {
 				}
 
 				Rectangle {
-					radius: 4
+					radius: Theme.radiusSmall
 					color: pinHover.hovered
-								? "#22ebdbb2"
+								? Theme.hover
 								: "transparent"
 					implicitWidth: 160
 					implicitHeight: 24
@@ -198,8 +202,9 @@ PanelWindow {
 					Text {
 						anchors.verticalCenter: parent.verticalCenter
 						leftPadding: 4
-						color: "#ebdbb2"
-						font.pixelSize: 14
+						// keeps the default font because the label embeds a nerd font glyph
+						color: Theme.text
+						font.pixelSize: Theme.fontSize(14)
 						text: root.pinned
 								? "󰐄   Remove from bar"
 								: "󰐃   Keep in bar"

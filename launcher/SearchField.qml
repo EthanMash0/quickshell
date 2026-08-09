@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 
+import "../theme"
+
 TextField {
 	id: root
 
@@ -17,16 +19,17 @@ TextField {
 	implicitHeight: 36
 
 	placeholderText: "Search apps..."
-	placeholderTextColor: "#88ebdbb2"
-	color: "#ebdbb2"
-	font.pixelSize: 14
+	placeholderTextColor: Theme.textMuted
+	color: Theme.text
+	font.family: Theme.labelFont
+	font.pixelSize: Theme.fontSize(14)
 	rightPadding: 8
 	leftPadding: 8
 
 	background: Rectangle {
-		radius: 6
-		color: "#33181818"
-		border.color: "#66ebdbb2"
+		radius: Theme.radiusSmall
+		color: Theme.inputBackground
+		border.color: Theme.borderSoft
 		border.width: 1
 	}
 

@@ -3,6 +3,7 @@ import Quickshell
 import "right"
 import "center"
 import "left"
+import "../theme"
 
 Scope {
 	Variants {
@@ -18,9 +19,9 @@ Scope {
 				right: true
 			}
 
-			implicitHeight: 40
+			implicitHeight: Theme.barHeight
 
-			color: "#bb181818"
+			color: Theme.barBackground
 
 			Right {
 				anchors.right: parent.right
