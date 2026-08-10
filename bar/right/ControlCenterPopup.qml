@@ -179,7 +179,7 @@ PanelWindow {
 
 			// the wrapper sizes itself to this layout, and a layout only knows
 			// how wide its children want to be, so one of them has to say
-			readonly property int rowWidth: 340
+			readonly property int rowWidth: 300
 
 			//------------------------
 			// bluetooth and network

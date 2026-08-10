@@ -13,8 +13,10 @@ RowLayout {
 	WrapperRectangle {
 		id: systemUsageBG
 		color: "#bb181818"
-		rightMargin: 12
-		leftMargin: 12
+		rightMargin: 4
+		leftMargin: 4
+		// rightMargin: 12
+		// leftMargin: 12
 		implicitHeight: 40
 		radius: systemUsageBG.implicitHeight / 2
 
@@ -41,9 +43,11 @@ RowLayout {
 					// 		: "transparent"
 					color: "transparent"
 					// color: Theme.hover
-					radius: Theme.radius
-					rightMargin: 8
-					leftMargin: 8
+					radius: systemUsageBG.radius
+					rightMargin: 16
+					leftMargin: 16
+					// rightMargin: 8
+					// leftMargin: 8
 
 					RowLayout {
 						id: stats

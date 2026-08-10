@@ -50,9 +50,10 @@ RowLayout {
 
 			// hover background
 			Rectangle {
-				color: systemStateHover.hovered
-						? Theme.hover
-						: "transparent"
+				// color: systemStateHover.hovered
+				// 		? Theme.hover
+				// 		: "transparent"
+				color: "transparent"
 				radius: systemStateButton.height / 2
 
 				// for future expansion (if desired)
