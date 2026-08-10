@@ -17,9 +17,9 @@ RowLayout {
 	}
 
 	WrapperRectangle {
+		Layout.leftMargin: 8
 		id: bg
 		color: "#bb181818"
-		Layout.leftMargin: 8
 		margin: 4
 		implicitWidth: 40
 		implicitHeight: 40
@@ -73,8 +73,8 @@ RowLayout {
 	WrapperRectangle {
 		id: workspaces
 		color: "#bb181818"
-		rightMargin: 16
-		leftMargin: 16
+		rightMargin: 12
+		leftMargin: 12
 		implicitHeight: 40
 		radius: workspaces.implicitHeight / 2
 

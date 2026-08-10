@@ -123,7 +123,7 @@ RowLayout {
 							anchors.horizontalCenter: parent.horizontalCenter
 							anchors.bottom: iconWrapper.bottom
 
-							width: 28
+							width: 24
 							height: 1.5
 							radius: 1
 							color: Theme.highlight

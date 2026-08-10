@@ -13,8 +13,8 @@ RowLayout {
 	WrapperRectangle {
 		id: systemUsageBG
 		color: "#bb181818"
-		rightMargin: 16
-		leftMargin: 16
+		rightMargin: 12
+		leftMargin: 12
 		implicitHeight: 40
 		radius: systemUsageBG.implicitHeight / 2
 
@@ -27,7 +27,6 @@ RowLayout {
 			WrapperMouseArea {
 				id: systemUsage
 				implicitHeight: systemUsageBG.height - 8
-				// implicitWidth: systemUsageBG.width
 				cursorShape: Qt.PointingHandCursor
 				onClicked: Prefs.run(Prefs.systemMonitorCommand)
 
@@ -63,8 +62,8 @@ RowLayout {
 		id: bg
 		color: "#bb181818"
 		Layout.rightMargin: 8
-		rightMargin: 16
-		leftMargin: 16
+		rightMargin: 12
+		leftMargin: 12
 		implicitHeight: 40
 		radius: bg.implicitHeight / 2
 		RowLayout {

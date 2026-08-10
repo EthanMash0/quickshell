@@ -10,8 +10,8 @@ RowLayout {
 	WrapperRectangle {
 		id: center
 		color: "#bb181818"
-		rightMargin: 16
-		leftMargin: 16
+		rightMargin: 12
+		leftMargin: 12
 		implicitHeight: 40
 		radius: center.implicitHeight / 2
 		AppsWidget {}

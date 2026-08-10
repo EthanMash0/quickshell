@@ -28,7 +28,7 @@ RowLayout {
 			}  
 
 			WrapperRectangle {
-				implicitWidth: 18
+				implicitWidth: 20
 				radius: Theme.radiusSmall
 				color: focused 
 					? Theme.highlight 
