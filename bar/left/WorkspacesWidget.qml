@@ -6,27 +6,35 @@ import Quickshell.Hyprland
 import "../../theme"
 
 RowLayout {
+	spacing: 8
+
 	Repeater {
 		model: 5
 
 		WrapperMouseArea {
 			required property int index
-			leftMargin: 4
 			cursorShape: Qt.PointingHandCursor
 
-			readonly property bool focused: Hyprland.focusedWorkspace?.id === index + 1
+			readonly property bool focused: {
+				Hyprland.focusedWorkspace?.id === index + 1
+			}
+
+			HoverHandler {
+				id: hover
+			}
 
 			onClicked: {
 				Hyprland.dispatch(`hl.dsp.focus({ workspace = "${index + 1}" }) `)
 			}  
 
 			WrapperRectangle {
-				implicitWidth: 16
-				leftMargin: 4
+				implicitWidth: 18
 				radius: Theme.radiusSmall
 				color: focused 
 					? Theme.highlight 
-					: "transparent"
+					: hover.hovered
+						? Theme.hover
+						: "transparent"
 
 				Text {
 					color: focused
@@ -34,6 +42,7 @@ RowLayout {
 						: Theme.text
 					font.family: Theme.labelFont
 					font.pixelSize: Theme.fontSize(16)
+					horizontalAlignment: Text.AlignHCenter
 					text: `${index + 1}`
 				}
 			}

@@ -28,17 +28,11 @@ Singleton {
 	// clock format
 	//--------------
 	// a custom string wins outright, otherwise it is assembled from the toggles
-	readonly property string clockFormat: {
+	readonly property string clockTimeFormat: {
 		const custom = root.clockCustomFormat.trim()
-		if (custom.length > 0) {
-			return custom
-		}
+		if (custom.length > 0) return custom
 
-		let out = root.clockShowDate
-				? "ddd MMM d  "
-				: ""
-
-		out += root.clockUse24Hour
+		let out = root.clockUse24Hour
 				? "HH:mm"
 				: "hh:mm"
 
@@ -53,9 +47,11 @@ Singleton {
 		return out
 	}
 
+	readonly property string clockDateFormat: "ddd MMM d"
+
 	// SystemClock only ticks as often as it is told to, so seconds need the
 	// finer precision to actually advance
-	readonly property bool clockNeedsSeconds: root.clockFormat.includes("ss")
+	readonly property bool clockNeedsSeconds: root.clockTimeFormat.includes("ss")
 
 	//---------
 	// helpers

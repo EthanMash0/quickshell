@@ -9,6 +9,7 @@ import "../../theme"
 
 RowLayout {
 	id: root
+	spacing: 12
 	property bool isOpen: true
 
 	function trayIconCandidates(src, px = 16) {
@@ -34,6 +35,7 @@ RowLayout {
 	}
 
 	WrapperMouseArea {
+		cursorShape: Qt.PointingHandCursor
 		onClicked: root.isOpen = !root.isOpen
 
 		Text {
@@ -46,6 +48,7 @@ RowLayout {
 	}
 
 	RowLayout {
+		spacing: 12
 		visible: root.isOpen
 
 		Repeater {
@@ -53,7 +56,6 @@ RowLayout {
 
 			WrapperMouseArea {
 				id: trayBtn
-				leftMargin: 8
 				cursorShape: Qt.PointingHandCursor
 
 				required property var modelData

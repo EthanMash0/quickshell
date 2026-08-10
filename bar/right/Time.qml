@@ -8,7 +8,11 @@ import "../../prefs"
 Singleton {
 	id: root
 	readonly property string time: {
-		Qt.formatDateTime(clock.date, Prefs.clockFormat)
+		Qt.formatDateTime(clock.date, Prefs.clockTimeFormat)
+	}
+
+	readonly property string date: {
+		Qt.formatDateTime(clock.date, Prefs.clockDateFormat)
 	}
 
 	SystemClock {

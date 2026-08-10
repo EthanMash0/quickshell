@@ -9,6 +9,8 @@ import "../../theme"
 
 RowLayout {
 	id: root
+	// spacing: 16
+	spacing: 0
 
 	AppPreviewPopup { 
 		id: previewPopup 
@@ -23,8 +25,8 @@ RowLayout {
 
 		WrapperMouseArea {
 			id: appBtn
-			rightMargin: 4
-			leftMargin: 4
+			// rightMargin: 4
+			// leftMargin: 4
 			cursorShape: Qt.PointingHandCursor
 
 			required property var modelData
@@ -89,29 +91,44 @@ RowLayout {
 				}
 			}
 
-			//----------------------------
-			// icon and running indicator
-			//----------------------------
-			Item {
-				implicitWidth: icon.implicitWidth
-				implicitHeight: 36
+			// hover background
+			WrapperRectangle {
+				color: appHover.hovered
+						? Theme.hover
+						: "transparent"
+				radius: Theme.radiusSmall
+				rightMargin: 8
+				leftMargin: 8
+				implicitHeight: 34
 
-				IconImage {
-					id: icon
-					source: Quickshell.iconPath(entry.icon, true)
-					implicitSize: 24
-					anchors.verticalCenter: parent.verticalCenter
-				}
+				//----------------------------
+				// icon and running indicator
+				//----------------------------
+				ColumnLayout {
+					Item {
+						id: iconWrapper
+						implicitWidth: icon.implicitWidth
+						implicitHeight: 30
+						// anchors.verticalCenter: parent.verticalCenter
 
-				WrapperRectangle {
-					visible: appRunning
-					anchors.horizontalCenter: parent.horizontalCenter
-					anchors.bottom: parent.bottom
+						IconImage {
+							id: icon
+							source: Quickshell.iconPath(entry.icon, true)
+							implicitSize: 22
+							anchors.verticalCenter: parent.verticalCenter
+						}
 
-					width: 28
-					height: 1.5
-					radius: 1
-					color: Theme.highlight
+						WrapperRectangle {
+							visible: appRunning
+							anchors.horizontalCenter: parent.horizontalCenter
+							anchors.bottom: iconWrapper.bottom
+
+							width: 28
+							height: 1.5
+							radius: 1
+							color: Theme.highlight
+						}
+					}
 				}
 			}
 		}

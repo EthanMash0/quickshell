@@ -8,128 +8,159 @@ import "../../prefs"
 
 RowLayout {
 	id: root
-	spacing: 0
+	spacing: 2
 
-	//--------------------
-	// system tray widget
-	//--------------------
-	WrapperItem {
-		rightMargin: 8
+	WrapperRectangle {
+		id: systemUsageBG
+		color: "#bb181818"
+		rightMargin: 16
+		leftMargin: 16
+		implicitHeight: 40
+		radius: systemUsageBG.implicitHeight / 2
 
-		SystemTrayWidget {}
-	}
-	
-	//---------------------
-	// system usage widget
-	//---------------------
-	WrapperMouseArea {
-		id: systemUsage
-		cursorShape: Qt.PointingHandCursor
-		onClicked: Prefs.run(Prefs.systemMonitorCommand)
+		RowLayout {
+			spacing: 0
+			
+			//---------------------
+			// system usage widget
+			//---------------------
+			WrapperMouseArea {
+				id: systemUsage
+				implicitHeight: systemUsageBG.height - 8
+				// implicitWidth: systemUsageBG.width
+				cursorShape: Qt.PointingHandCursor
+				onClicked: Prefs.run(Prefs.systemMonitorCommand)
 
-		HoverHandler {
-			id: systemUsageHover
-		}
+				HoverHandler {
+					id: systemUsageHover
+				}
 
-		// hover background
-		Rectangle {
-			color: systemUsageHover.hovered
-					? Theme.hover
-					: "transparent"
-			radius: Theme.radius
-			implicitWidth: stats.implicitWidth + 16
-			implicitHeight: stats.implicitHeight + 6
+				// hover background
+				WrapperRectangle {
+					// color: systemUsageHover.hovered
+					// 		? Theme.hover
+					// 		: "transparent"
+					color: "transparent"
+					// color: Theme.hover
+					radius: Theme.radius
+					rightMargin: 8
+					leftMargin: 8
 
-			RowLayout {
-				id: stats
-				spacing: 16
-				anchors.centerIn: parent
-				GPUWidget {}
-				CPUWidget {}
-				RAMWidget {}
-			}
-		}
-	}
+					RowLayout {
+						id: stats
+						spacing: 16
 
-	//-----------------------
-	// control center widget
-	//-----------------------
-	ControlCenterPopup {
-		id: controlCenterPopup
-	}
-
-	WrapperMouseArea {
-		id: controlCenter
-		cursorShape: Qt.PointingHandCursor
-		onClicked: {
-			if (controlCenterPopup.visible) {
-				controlCenterPopup.hide()
-			} else {
-				controlCenterPopup.show(controlCenter)	
-			}
-		}
-
-		HoverHandler {
-			id: controlCenterHover
-			onHoveredChanged: {
-				if (hovered) {
-					controlCenterPopup.cancelHide()
-				} else {
-					controlCenterPopup.scheduleHide()
+						GPUWidget {}
+						CPUWidget {}
+						RAMWidget {}
+					}
 				}
 			}
 		}
-
-		// hover background
-		Rectangle {
-			color: controlCenterHover.hovered
-					? Theme.hover
-					: "transparent"
-			radius: Theme.radius
-			implicitWidth: controls.implicitWidth + 16
-			implicitHeight: controls.implicitHeight + 12
-
-			RowLayout {
-				id: controls
-				spacing: 16
-				anchors.centerIn: parent
-
-				AudioWidget {}
-				BluetoothWidget {}
-				NetworkWidget {}
-			}
-		}
 	}
 
-	//--------------
-	// clock widget
-	//--------------
-	WrapperMouseArea {
-		id: dateTime
-		rightMargin: 8
-		cursorShape: Qt.PointingHandCursor
-		onClicked: Prefs.run(Prefs.calendarCommand)
+	WrapperRectangle {
+		id: bg
+		color: "#bb181818"
+		Layout.rightMargin: 8
+		rightMargin: 16
+		leftMargin: 16
+		implicitHeight: 40
+		radius: bg.implicitHeight / 2
+		RowLayout {
+			spacing: 0
 
-		HoverHandler {
-			id: dateTimeHover
-		}
+			//--------------------
+			// system tray widget
+			//--------------------
+			WrapperItem {
+				rightMargin: 8
 
-		// hover background
-		Rectangle {
-			color: dateTimeHover.hovered
-					? Theme.hover
-					: "transparent"
-			radius: Theme.radius
-			implicitWidth: clock.implicitWidth + 16
-			implicitHeight: clock.implicitHeight + 14
+				SystemTrayWidget {}
+			}
+			
+			//-----------------------
+			// control center widget
+			//-----------------------
+			ControlCenterPopup {
+				id: controlCenterPopup
+			}
 
-			// for future expansion (if desired)
-			RowLayout {
-				id: clock
-				spacing: 16
-				anchors.centerIn: parent
+			WrapperMouseArea {
+				id: controlCenter
+				implicitHeight: bg.height - 8
+				cursorShape: Qt.PointingHandCursor
+				onClicked: {
+					if (controlCenterPopup.visible) {
+						controlCenterPopup.hide()
+					} else {
+						controlCenterPopup.show(controlCenter)	
+					}
+				}
 
-				ClockWidget {}
+				HoverHandler {
+					id: controlCenterHover
+					onHoveredChanged: {
+						if (hovered) {
+							controlCenterPopup.cancelHide()
+						} else {
+							controlCenterPopup.scheduleHide()
+						}
+					}
+				}
+
+				// hover background
+				WrapperRectangle {
+					color: controlCenterHover.hovered
+							? Theme.hover
+							: "transparent"
+					radius: Theme.radiusSmall
+					rightMargin: 8
+					leftMargin: 8
+
+					RowLayout {
+						id: controls
+						spacing: 16
+
+						AudioWidget {}
+						BluetoothWidget {}
+						NetworkWidget {}
+					}
+				}
+			}
+
+			//--------------
+			// clock widget
+			//--------------
+			WrapperMouseArea {
+				id: dateTime
+				implicitHeight: bg.height - 8
+				cursorShape: Qt.PointingHandCursor
+				onClicked: Prefs.run(Prefs.calendarCommand)
+
+				HoverHandler {
+					id: dateTimeHover
+				}
+
+				// hover background
+				WrapperRectangle {
+					color: dateTimeHover.hovered
+							? Theme.hover
+							: "transparent"
+					radius: Theme.radiusSmall
+					rightMargin: 8
+					leftMargin: 8
+					implicitHeight: bg.height
+
+					// for future expansion (if desired)
+					RowLayout {
+						id: clock
+						spacing: 16
+						anchors.centerIn: parent
+
+						ClockWidget {}
+					}
+				}
 			}
 		}
 	}

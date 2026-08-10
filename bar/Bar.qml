@@ -20,21 +20,24 @@ Scope {
 			}
 
 			implicitHeight: Theme.barHeight
-
 			color: Theme.barBackground
 
 			Right {
 				anchors.right: parent.right
-				anchors.verticalCenter: parent.verticalCenter
+				// anchors.verticalCenter: parent.verticalCenter
+				anchors.bottom: parent.bottom
 			}
 
 			Center {
-				anchors.centerIn: parent
+				// anchors.centerIn: parent
+				anchors.horizontalCenter: parent.horizontalCenter
+				anchors.bottom: parent.bottom
 			}
 
 			Left {
 				anchors.left: parent.left
-				anchors.verticalCenter: parent.verticalCenter
+				// anchors.verticalCenter: parent.verticalCenter
+				anchors.bottom: parent.bottom
 			}
 		}
 	}
