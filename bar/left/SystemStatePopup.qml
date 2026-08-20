@@ -144,6 +144,45 @@ PanelWindow {
 				}
 			}
 
+			//--------------
+			// hibernate button
+			//--------------
+			WrapperMouseArea {
+				id: hibernateButton
+				cursorShape: Qt.PointingHandCursor
+				onClicked: {
+					root.hide()
+
+					Quickshell.execDetached([
+						"sh",
+						"-c",
+						"systemctl hibernate"
+					])
+				}
+
+				HoverHandler {
+					id: hibernateHover
+				}
+
+				Rectangle {
+					radius: Theme.radiusSmall
+					color: hibernateHover.hovered
+							? Theme.hover
+							: "transparent"
+					implicitWidth: 80
+					implicitHeight: 24
+
+					Text {
+						color: Theme.text
+						font.family: Theme.labelFont
+						font.pixelSize: Theme.fontSize(14)
+						text: "Hibernate"
+						leftPadding: 4
+						anchors.verticalCenter: parent.verticalCenter
+					}
+				}
+			}
+
 			//----------------
 			// restart button
 			//----------------
