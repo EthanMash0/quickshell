@@ -29,7 +29,7 @@ PanelWindow {
 	function show(anchorItem) {
 		root.anchorItem = anchorItem
 
-		const screen = anchorItem.Window.window?.screen
+		const screen = anchorItem.QsWindow.window?.screen
 		if (screen) {
 			root.screen = screen
 		}
@@ -57,12 +57,12 @@ PanelWindow {
 		}
 
 		const item = root.anchorItem
-		// below the icon, horizontally centered on it
-		const g = item.mapToGlobal(0, item.height)
-		const local = root.contentItem.mapFromGlobal(g.x, g.y) 
+		// below the icon, left edge aligned with it. position is in the bar
+		// window, which shares the popup's origin once both sit on this screen
+		const pos = item.QsWindow.itemPosition(item)
 
-		menu.x = local.x
-		menu.y = local.y + 8
+		menu.x = pos.x
+		menu.y = pos.y + item.height + 8
 	}
 
 	anchors {
