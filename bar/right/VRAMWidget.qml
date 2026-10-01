@@ -7,10 +7,12 @@ import "../../theme"
 import "../system"
 
 RowLayout {
+	visible: SystemUsage.hasVram
+
 	Text {
 		color: Theme.text
 		font.pixelSize: Theme.fontSize(16)
-		text: ""
+		text: "󰚗"
 	}
 
 	ColumnLayout {
@@ -21,7 +23,7 @@ RowLayout {
 			font.family: Theme.labelFont
 			font.pixelSize: Theme.fontSize(12)
 			font.bold: true
-			text: `${SystemUsage.ramPercent}%`
+			text: `${SystemUsage.vramPercent}%`
 			topPadding: 1
 		}
 
@@ -29,7 +31,7 @@ RowLayout {
 			color: Theme.text
 			font.family: Theme.labelFont
 			font.pixelSize: Theme.fontSize(9)
-			text: "RAM"
+			text: "VRAM"
 			rightPadding: 5
 		}
 	}

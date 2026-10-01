@@ -44,8 +44,7 @@ SettingsPage {
 		matched.sort((a, b) =>
 			(a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase()))
 
-		// the full list is hundreds of entries, which is neither useful nor fast
-		return matched.slice(0, 12)
+		return matched
 	}
 
 	//---------

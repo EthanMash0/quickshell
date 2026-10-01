@@ -11,6 +11,7 @@ Singleton {
 	// sidebar order, and the page each entry loads
 	readonly property var pages: [
 		{ id: "general", label: "General", glyph: "󰒓", source: "pages/GeneralPage.qml" },
+		{ id: "bar", label: "Bar", glyph: "󰡃", source: "pages/BarPage.qml" },
 		{ id: "network", label: "Network", glyph: "󰤨", source: "pages/NetworkPage.qml" },
 		{ id: "bluetooth", label: "Bluetooth", glyph: "󰂯", source: "pages/BluetoothPage.qml" },
 		{ id: "audio", label: "Audio", glyph: "󰕾", source: "pages/AudioPage.qml" },

@@ -4,6 +4,7 @@ import "right"
 import "center"
 import "left"
 import "../theme"
+import "../prefs"
 
 Scope {
 	Variants {
@@ -19,6 +20,7 @@ Scope {
 				right: true
 			}
 
+			visible: Prefs.barVisible
 			implicitHeight: Theme.barHeight
 			color: Theme.barBackground
 

@@ -6,9 +6,25 @@ import Quickshell.Wayland
 import Quickshell.Widgets
 
 import "../../theme"
+import "../../prefs"
 
 RowLayout {
 	id: root
+
+	function dismiss() {
+		previewPopup.hide()
+		appMenu.hide()
+	}
+
+	Connections {
+		target: Prefs
+		function onBarShowCenterChanged() {
+			if (!Prefs.barShowCenter) root.dismiss()
+		}
+		function onBarShowAppsChanged() {
+			if (!Prefs.barShowApps) root.dismiss()
+		}
+	}
 	// spacing: 16
 	spacing: 0
 

@@ -9,8 +9,22 @@ import "../../prefs"
 RowLayout {
 	id: root
 	spacing: 2
+	visible: Prefs.barShowRight
+			&& (Prefs.barShowUsage || Prefs.barShowTray || Prefs.barShowControlCenter || Prefs.barShowClock)
+
+	function dismissControlCenter() {
+		if (!Prefs.barShowRight || !Prefs.barShowControlCenter)
+			controlCenterPopup.hide()
+	}
+
+	Connections {
+		target: Prefs
+		function onBarShowRightChanged() { root.dismissControlCenter() }
+		function onBarShowControlCenterChanged() { root.dismissControlCenter() }
+	}
 
 	WrapperRectangle {
+		visible: Prefs.barShowUsage
 		id: systemUsageBG
 		color: "#bb181818"
 		rightMargin: 4
@@ -54,6 +68,7 @@ RowLayout {
 						spacing: 16
 
 						GPUWidget {}
+						VRAMWidget {}
 						CPUWidget {}
 						RAMWidget {}
 					}
@@ -63,6 +78,7 @@ RowLayout {
 	}
 
 	WrapperRectangle {
+		visible: Prefs.barShowTray || Prefs.barShowControlCenter || Prefs.barShowClock
 		id: bg
 		color: "#bb181818"
 		Layout.rightMargin: 8
@@ -77,6 +93,7 @@ RowLayout {
 			// system tray widget
 			//--------------------
 			WrapperItem {
+				visible: Prefs.barShowTray
 				rightMargin: 8
 
 				SystemTrayWidget {}
@@ -91,6 +108,7 @@ RowLayout {
 
 			WrapperMouseArea {
 				id: controlCenter
+				visible: Prefs.barShowControlCenter
 				implicitHeight: bg.height - 8
 				cursorShape: Qt.PointingHandCursor
 				onClicked: {
@@ -137,6 +155,7 @@ RowLayout {
 			//--------------
 			WrapperMouseArea {
 				id: dateTime
+				visible: Prefs.barShowClock
 				implicitHeight: bg.height - 8
 				cursorShape: Qt.PointingHandCursor
 				onClicked: Prefs.run(Prefs.calendarCommand)

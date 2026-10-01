@@ -3,9 +3,12 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
 
+import "../../prefs"
+
 RowLayout {
 	id: root
 	spacing: 2
+	visible: Prefs.barShowCenter && Prefs.barShowApps
 
 	WrapperRectangle {
 		id: center

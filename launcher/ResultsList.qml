@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Widgets
 
 import "../theme"
+import "../settings"
 
 ListView {
 	id: root
@@ -14,6 +15,22 @@ ListView {
 	clip: true
 	spacing: 4
 	model: root.results
+
+	// not a desktop file; opening it shows the in-shell settings window
+	readonly property var settingsEntry: ({
+		name: "Settings",
+		genericName: "Quickshell preferences",
+		id: "quickshell-settings",
+		icon: ""
+	})
+
+	function settingsMatches(query) {
+		if (!query.length) return true
+		const name = root.settingsEntry.name.toLowerCase()
+		const generic = root.settingsEntry.genericName.toLowerCase()
+		const id = root.settingsEntry.id.toLowerCase()
+		return name.includes(query) || generic.includes(query) || id.includes(query)
+	}
 
 	//----------------------------
 	// filter + sort applications
@@ -26,10 +43,25 @@ ListView {
 
 		// empty query: alphabetical, capped for performance
 		if (!q.length) {
-			return apps.slice().sort(byName).slice(0, 40)
+			const sorted = apps.slice().sort(byName)
+			const withSettings = []
+			let placed = false
+			for (let i = 0; i < sorted.length; i++) {
+				const name = (sorted[i].name || "").toLowerCase()
+				if (!placed && name > "settings") {
+					withSettings.push(root.settingsEntry)
+					placed = true
+				}
+				withSettings.push(sorted[i])
+			}
+			if (!placed)
+				withSettings.push(root.settingsEntry)
+			return withSettings.slice(0, 40)
 		}
 
 		const matched = []
+		if (root.settingsMatches(q))
+			matched.push(root.settingsEntry)
 		for (let i = 0; i < apps.length; i++) {
 			const app = apps[i]
 			const name = (app.name || "").toLowerCase()
@@ -59,7 +91,10 @@ ListView {
 	function launchIndex(index) {
 		const app = root.results[index]
 		if (!app) return
-		app.execute()
+		if (app.id === root.settingsEntry.id)
+			SettingsState.show()
+		else
+			app.execute()
 		LauncherState.hide()
 	}
 
@@ -150,9 +185,24 @@ ListView {
 				anchors.rightMargin: 10
 				spacing: 10
 
-				IconImage {
-					source: Quickshell.iconPath(modelData.icon, true)
-					implicitSize: 28
+				Item {
+					implicitWidth: 28
+					implicitHeight: 28
+
+					IconImage {
+						anchors.centerIn: parent
+						visible: modelData.id !== root.settingsEntry.id
+						source: Quickshell.iconPath(modelData.icon, true)
+						implicitSize: 28
+					}
+
+					Text {
+						anchors.centerIn: parent
+						visible: modelData.id === root.settingsEntry.id
+						text: "󰒓"
+						color: Theme.text
+						font.pixelSize: Theme.fontSize(18)
+					}
 				}
 
 				ColumnLayout {

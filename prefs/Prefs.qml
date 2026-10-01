@@ -19,10 +19,34 @@ Singleton {
 
 	property alias calendarCommand: prefsJson.calendarCommand
 	property alias systemMonitorCommand: prefsJson.systemMonitorCommand
+	// empty means automatic: prefer a dedicated gpu over an integrated one
+	property alias gpuPciSlot: prefsJson.gpuPciSlot
 
 	property alias mediaPreferredPlayer: prefsJson.mediaPreferredPlayer
 	property alias mediaShowArt: prefsJson.mediaShowArt
 	property alias mediaShowInControlCenter: prefsJson.mediaShowInControlCenter
+
+	property alias barShowLeft: prefsJson.barShowLeft
+	property alias barShowCenter: prefsJson.barShowCenter
+	property alias barShowRight: prefsJson.barShowRight
+	property alias barShowPower: prefsJson.barShowPower
+	property alias barShowWorkspaces: prefsJson.barShowWorkspaces
+	property alias barShowApps: prefsJson.barShowApps
+	property alias barShowUsage: prefsJson.barShowUsage
+	property alias barShowTray: prefsJson.barShowTray
+	property alias barShowControlCenter: prefsJson.barShowControlCenter
+	property alias barShowClock: prefsJson.barShowClock
+
+	// the panel itself goes away when every section or every widget in it is off
+	readonly property bool barVisible: {
+		if (root.barShowLeft && (root.barShowPower || root.barShowWorkspaces))
+			return true
+		if (root.barShowCenter && root.barShowApps)
+			return true
+		if (root.barShowRight && (root.barShowUsage || root.barShowTray || root.barShowControlCenter || root.barShowClock))
+			return true
+		return false
+	}
 
 	//--------------
 	// clock format
@@ -72,9 +96,20 @@ Singleton {
 		root.clockCustomFormat = ""
 		root.calendarCommand = "gnome-calendar"
 		root.systemMonitorCommand = "alacritty -e btop"
+		root.gpuPciSlot = ""
 		root.mediaPreferredPlayer = ""
 		root.mediaShowArt = true
 		root.mediaShowInControlCenter = true
+		root.barShowLeft = true
+		root.barShowCenter = true
+		root.barShowRight = true
+		root.barShowPower = true
+		root.barShowWorkspaces = true
+		root.barShowApps = true
+		root.barShowUsage = true
+		root.barShowTray = true
+		root.barShowControlCenter = true
+		root.barShowClock = true
 	}
 
 	//-------------------
@@ -103,11 +138,24 @@ Singleton {
 
 			property string calendarCommand: "gnome-calendar"
 			property string systemMonitorCommand: "alacritty -e btop"
+			// pci slot such as 0000:04:00.0. empty prefers a dedicated gpu
+			property string gpuPciSlot: ""
 
 			// empty means "whichever player is currently playing"
 			property string mediaPreferredPlayer: ""
 			property bool mediaShowArt: true
 			property bool mediaShowInControlCenter: true
+
+			property bool barShowLeft: true
+			property bool barShowCenter: true
+			property bool barShowRight: true
+			property bool barShowPower: true
+			property bool barShowWorkspaces: true
+			property bool barShowApps: true
+			property bool barShowUsage: true
+			property bool barShowTray: true
+			property bool barShowControlCenter: true
+			property bool barShowClock: true
 		}
 	}
 }

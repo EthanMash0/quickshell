@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Widgets
 
 import "../../theme"
+import "../system"
 
 RowLayout {
 	Text {

@@ -140,7 +140,7 @@ SettingsPage {
 
 		SettingRow {
 			label: "System monitor"
-			description: "Opened when the CPU, GPU and RAM readout is clicked."
+			description: "Opened when the GPU, VRAM, CPU and RAM readout is clicked."
 
 			InputField {
 				id: monitorField
@@ -181,7 +181,7 @@ SettingsPage {
 
 		SettingRow {
 			label: "Reset to defaults"
-			description: "Restores the clock, default apps and media preferences. Appearance is reset separately."
+			description: "Restores the clock, default apps, bar layout, GPU selection and media preferences. Appearance is reset separately."
 
 			ActionButton {
 				label: "Reset"

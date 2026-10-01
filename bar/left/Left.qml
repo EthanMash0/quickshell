@@ -4,10 +4,23 @@ import Quickshell
 import Quickshell.Widgets
 
 import "../../theme"
+import "../../prefs"
 
 RowLayout {
 	id: root
 	spacing: 2
+	visible: Prefs.barShowLeft && (Prefs.barShowPower || Prefs.barShowWorkspaces)
+
+	function dismissPower() {
+		if (!Prefs.barShowLeft || !Prefs.barShowPower)
+			systemStatePopup.hide()
+	}
+
+	Connections {
+		target: Prefs
+		function onBarShowLeftChanged() { root.dismissPower() }
+		function onBarShowPowerChanged() { root.dismissPower() }
+	}
 
 	//---------------------------
 	// system power state widget
@@ -17,6 +30,7 @@ RowLayout {
 	}
 
 	WrapperRectangle {
+		visible: Prefs.barShowPower
 		Layout.leftMargin: 8
 		id: bg
 		color: "#bb181818"
@@ -72,6 +86,7 @@ RowLayout {
 	// workspaces widget
 	//-------------------
 	WrapperRectangle {
+		visible: Prefs.barShowWorkspaces
 		id: workspaces
 		color: "#bb181818"
 		rightMargin: 12
